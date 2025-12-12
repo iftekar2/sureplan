@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:sureplan/forgot_password/updatePassword.dart';
 import 'package:sureplan/home/homePage.dart';
 import 'package:sureplan/welcome/welcomePage.dart';
 
@@ -23,13 +22,7 @@ class AuthGate extends StatelessWidget {
         }
 
         // Get the auth event and session
-        final event = snapshot.data?.event;
         final session = snapshot.data?.session;
-
-        // Check if this is a password recovery event
-        if (event == AuthChangeEvent.passwordRecovery) {
-          return const UpdatePassword();
-        }
 
         // Authenticated state
         if (session != null) {
