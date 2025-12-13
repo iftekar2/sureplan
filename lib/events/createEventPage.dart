@@ -13,6 +13,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _locationController = TextEditingController();
+  final _descriptionController = TextEditingController();
   final _eventService = EventService();
 
   DateTime _selectedDateTime = DateTime.now().add(Duration(hours: 1));
@@ -69,6 +70,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
         title: _titleController.text.trim(),
         dateTime: _selectedDateTime,
         location: _locationController.text.trim(),
+        description: _descriptionController.text.trim(),
       );
 
       if (!mounted) return;
@@ -189,13 +191,32 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                maxLines: 2,
+                //maxLines: 2,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Please enter a location';
                   }
                   return null;
                 },
+              ),
+
+              SizedBox(height: 25),
+
+              // Description field
+              Text(
+                'Description',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  hintText: 'e.g., This is going to be a surprise party',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                maxLines: 5,
               ),
 
               SizedBox(height: 40),

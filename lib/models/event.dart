@@ -4,6 +4,7 @@ class Event {
   final DateTime dateTime;
   final String location;
   final String createdBy;
+  final String? description;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -13,6 +14,7 @@ class Event {
     required this.dateTime,
     required this.location,
     required this.createdBy,
+    required this.description,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -25,6 +27,7 @@ class Event {
       dateTime: DateTime.parse(json['date_time'] as String),
       location: json['location'] as String,
       createdBy: json['created_by'] as String,
+      description: json['description'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -37,6 +40,7 @@ class Event {
       'date_time': dateTime.toIso8601String(),
       'location': location,
       'created_by': createdBy,
+      'description': description,
     };
   }
 
@@ -47,6 +51,7 @@ class Event {
     DateTime? dateTime,
     String? location,
     String? createdBy,
+    String? description,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -56,6 +61,7 @@ class Event {
       dateTime: dateTime ?? this.dateTime,
       location: location ?? this.location,
       createdBy: createdBy ?? this.createdBy,
+      description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

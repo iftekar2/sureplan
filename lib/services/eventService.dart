@@ -9,6 +9,7 @@ class EventService {
     required String title,
     required DateTime dateTime,
     required String location,
+    String? description,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
@@ -19,6 +20,7 @@ class EventService {
       'title': title,
       'date_time': dateTime.toIso8601String(),
       'location': location,
+      'description': description,
       'created_by': userId,
     };
 

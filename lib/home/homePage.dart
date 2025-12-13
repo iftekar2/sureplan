@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:sureplan/events/createEventPage.dart';
+import 'package:sureplan/events/eventPage.dart';
 import 'package:sureplan/models/event.dart';
 import 'package:sureplan/services/eventService.dart';
 import 'package:sureplan/settings/profile.dart';
@@ -27,6 +28,17 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _eventsFuture = _eventService.getUpcomingEvents();
     });
+  }
+
+  Future<void> _navigateToEventPage(Event event) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EventPage(event: event)),
+    );
+
+    if (result == true) {
+      _refreshEvents();
+    }
   }
 
   Widget build(BuildContext context) {
@@ -168,7 +180,6 @@ class _HomePageState extends State<HomePage> {
                   1, // Add 1 for the "Create Event" button at bottom or top
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  // Title Header
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 20.0),
                     child: Row(
@@ -182,7 +193,11 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.add_circle, size: 30),
+                          icon: Icon(
+                            Icons.add_circle,
+                            size: 40,
+                            color: Colors.black,
+                          ),
                           onPressed: () async {
                             final result = await Navigator.push(
                               context,
@@ -201,60 +216,81 @@ class _HomePageState extends State<HomePage> {
                 }
 
                 final event = events[index - 1];
-                return Card(
-                  margin: EdgeInsets.only(bottom: 15),
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          event.title,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                return GestureDetector(
+                  onTap: () => _navigateToEventPage(event),
+                  child: Card(
+                    margin: EdgeInsets.only(bottom: 15),
+                    color: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(color: Colors.grey[400]!, width: 1),
+                    ),
+
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            event.title,
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_today,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              DateFormat(
-                                'MMM d, y • h:mm a',
-                              ).format(event.dateTime),
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                            SizedBox(width: 5),
-                            Expanded(
-                              child: Text(
-                                event.location,
-                                style: TextStyle(color: Colors.grey[700]),
-                                overflow: TextOverflow.ellipsis,
+
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.calendar_today,
+                                size: 30,
+                                color: Colors.grey,
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+
+                              SizedBox(width: 10),
+                              Text(
+                                DateFormat(
+                                  'MMM d, y • h:mm a',
+                                ).format(event.dateTime),
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                size: 30,
+                                color: Colors.grey,
+                              ),
+
+                              SizedBox(width: 10),
+                              Container(
+                                width: 200,
+                                child: Text(
+                                  event.location,
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                    fontSize: 20,
+                                  ),
+
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
