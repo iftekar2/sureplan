@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:sureplan/events/createEventPage.dart';
+import 'package:sureplan/models/event.dart';
+import 'package:sureplan/services/eventService.dart';
 import 'package:sureplan/settings/profile.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,7 +14,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final EventService _eventService = EventService();
+  late Future<List<Event>> _eventsFuture;
+
   @override
+  void initState() {
+    super.initState();
+    _refreshEvents();
+  }
+
+  void _refreshEvents() {
+    setState(() {
+      _eventsFuture = _eventService.getUpcomingEvents();
+    });
+  }
+
   Widget build(BuildContext context) {
     final supabase = Supabase.instance.client;
     final currentUser = supabase.auth.currentUser;
@@ -62,58 +79,189 @@ class _HomePageState extends State<HomePage> {
       ),
 
       backgroundColor: Colors.white,
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Get the party",
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-              ),
+      body: FutureBuilder<List<Event>>(
+        future: _eventsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(color: Colors.black),
+            );
+          }
 
-              Text(
-                "Started with SurePlan",
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-              ),
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
 
-              SizedBox(height: 10),
+          final events = snapshot.data ?? [];
 
-              Text(
-                "Let's make sure everyone is on the same page",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: const Color.fromARGB(255, 124, 124, 124),
+          if (events.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Get the party",
+                      style: TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "Started with SurePlan",
+                      style: TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "Let's make sure everyone is on the same page",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: const Color.fromARGB(255, 124, 124, 124),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(270, 70),
+                        backgroundColor: Colors.black,
+                      ),
+                      onPressed: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreateEventPage(),
+                          ),
+                        );
+                        if (result == true) {
+                          _refreshEvents();
+                        }
+                      },
+                      child: Text(
+                        "Create an Event",
+                        style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            );
+          }
 
-              SizedBox(height: 20),
-
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(270, 70),
-                  backgroundColor: Colors.black,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CreateEventPage()),
+          // List of events
+          return RefreshIndicator(
+            onRefresh: () async {
+              _refreshEvents();
+            },
+            child: ListView.builder(
+              padding: EdgeInsets.all(20),
+              itemCount:
+                  events.length +
+                  1, // Add 1 for the "Create Event" button at bottom or top
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  // Title Header
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Upcoming Events",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.add_circle, size: 30),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CreateEventPage(),
+                              ),
+                            );
+                            if (result == true) {
+                              _refreshEvents();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   );
-                },
-                child: Text(
-                  "Create an Event",
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                }
+
+                final event = events[index - 1];
+                return Card(
+                  margin: EdgeInsets.only(bottom: 15),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                ),
-              ),
-            ],
-          ),
-        ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          event.title,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_today,
+                              size: 16,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              DateFormat(
+                                'MMM d, y • h:mm a',
+                              ).format(event.dateTime),
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              size: 16,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(width: 5),
+                            Expanded(
+                              child: Text(
+                                event.location,
+                                style: TextStyle(color: Colors.grey[700]),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

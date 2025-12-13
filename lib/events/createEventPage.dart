@@ -13,7 +13,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _locationController = TextEditingController();
-  final EventService _eventService = EventService();
+  final _eventService = EventService();
 
   DateTime _selectedDateTime = DateTime.now().add(Duration(hours: 1));
   bool _isLoading = false;
@@ -148,6 +148,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 'Date & Time',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
+
               SizedBox(height: 10),
               InkWell(
                 onTap: _selectDateTime,
