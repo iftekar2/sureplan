@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:sureplan/events/createEventPage.dart';
 import 'package:sureplan/settings/profile.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,7 +15,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final supabase = Supabase.instance.client;
     final currentUser = supabase.auth.currentUser;
-    final currentEmail = currentUser?.email;
 
     return Scaffold(
       appBar: AppBar(
@@ -47,49 +47,73 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.white, Colors.white],
+            ),
+          ),
+        ),
       ),
 
-      body: FutureBuilder<Map<String, dynamic>>(
-        // Fetch user profile from database using user ID
-        future: supabase
-            .from('user_profiles')
-            .select()
-            .eq('id', currentUser?.id ?? '')
-            .single(),
-        builder: (context, snapshot) {
-          // While loading
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          // If error occurred
-          if (snapshot.hasError) {
-            return Column(
-              children: [
-                Text("Home Page"),
-                SizedBox(height: 20),
-                Text(
-                  "Welcome, ${currentEmail ?? 'User'}!",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
-            );
-          }
-
-          // Get username from database
-          final username = snapshot.data?['username'] as String?;
-
-          return Column(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Home Page"),
-              SizedBox(height: 20),
               Text(
-                "Welcome, ${username ?? currentEmail ?? 'User'}!",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                "Get the party",
+                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+              ),
+
+              Text(
+                "Started with SurePlan",
+                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+              ),
+
+              SizedBox(height: 10),
+
+              Text(
+                "Let's make sure everyone is on the same page",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: const Color.fromARGB(255, 124, 124, 124),
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(270, 70),
+                  backgroundColor: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CreateEventPage()),
+                  );
+                },
+                child: Text(
+                  "Create an Event",
+                  style: TextStyle(
+                    fontSize: 23,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
-          );
-        },
+          ),
+        ),
       ),
     );
   }

@@ -1,0 +1,132 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:sureplan/models/event.dart';
+
+class EventService {
+  final SupabaseClient _supabase = Supabase.instance.client;
+
+  /// Create a new event
+  Future<Event> createEvent({
+    required String title,
+    required DateTime dateTime,
+    required String location,
+  }) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) {
+      throw Exception('User must be logged in to create events');
+    }
+
+    final eventData = {
+      'title': title,
+      'date_time': dateTime.toIso8601String(),
+      'location': location,
+      'created_by': userId,
+    };
+
+    final response = await _supabase
+        .from('events')
+        .insert(eventData)
+        .select()
+        .single();
+
+    return Event.fromJson(response);
+  }
+
+  /// Get all events
+  Future<List<Event>> getAllEvents() async {
+    final response = await _supabase
+        .from('events')
+        .select()
+        .order('date_time', ascending: true);
+
+    return (response as List)
+        .map((json) => Event.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Get events created by current user
+  Future<List<Event>> getMyEvents() async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) {
+      throw Exception('User must be logged in');
+    }
+
+    final response = await _supabase
+        .from('events')
+        .select()
+        .eq('created_by', userId)
+        .order('date_time', ascending: true);
+
+    return (response as List)
+        .map((json) => Event.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Get a single event by ID
+  Future<Event> getEventById(String eventId) async {
+    final response = await _supabase
+        .from('events')
+        .select()
+        .eq('id', eventId)
+        .single();
+
+    return Event.fromJson(response);
+  }
+
+  /// Update an event
+  Future<Event> updateEvent({
+    required String eventId,
+    String? title,
+    DateTime? dateTime,
+    String? location,
+  }) async {
+    final updateData = <String, dynamic>{};
+
+    if (title != null) updateData['title'] = title;
+    if (dateTime != null) updateData['date_time'] = dateTime.toIso8601String();
+    if (location != null) updateData['location'] = location;
+
+    final response = await _supabase
+        .from('events')
+        .update(updateData)
+        .eq('id', eventId)
+        .select()
+        .single();
+
+    return Event.fromJson(response);
+  }
+
+  /// Delete an event
+  Future<void> deleteEvent(String eventId) async {
+    await _supabase.from('events').delete().eq('id', eventId);
+  }
+
+  /// Get upcoming events (future events only)
+  Future<List<Event>> getUpcomingEvents() async {
+    final now = DateTime.now().toIso8601String();
+
+    final response = await _supabase
+        .from('events')
+        .select()
+        .gte('date_time', now)
+        .order('date_time', ascending: true);
+
+    return (response as List)
+        .map((json) => Event.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Get past events
+  Future<List<Event>> getPastEvents() async {
+    final now = DateTime.now().toIso8601String();
+
+    final response = await _supabase
+        .from('events')
+        .select()
+        .lt('date_time', now)
+        .order('date_time', ascending: false);
+
+    return (response as List)
+        .map((json) => Event.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+}
