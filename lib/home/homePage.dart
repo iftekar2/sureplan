@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final EventService _eventService = EventService();
   late Future<List<Event>> _eventsFuture;
+  late Event _event;
 
   @override
   void initState() {
@@ -268,10 +269,13 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.location_on,
-                                size: 30,
-                                color: Colors.grey,
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Icon(
+                                  Icons.location_on,
+                                  size: 30,
+                                  color: Colors.grey,
+                                ),
                               ),
 
                               SizedBox(width: 10),

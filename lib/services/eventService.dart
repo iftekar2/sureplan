@@ -80,12 +80,14 @@ class EventService {
     String? title,
     DateTime? dateTime,
     String? location,
+    String? description,
   }) async {
     final updateData = <String, dynamic>{};
 
     if (title != null) updateData['title'] = title;
     if (dateTime != null) updateData['date_time'] = dateTime.toIso8601String();
     if (location != null) updateData['location'] = location;
+    if (description != null) updateData['description'] = description;
 
     final response = await _supabase
         .from('events')

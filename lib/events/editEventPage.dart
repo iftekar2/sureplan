@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sureplan/models/event.dart';
 import 'package:sureplan/services/eventService.dart';
 
@@ -15,6 +16,8 @@ class _EditEventPageState extends State<EditEventPage> {
   final _titleController = TextEditingController();
   DateTime _selectedDateTime = DateTime.now();
   final _locationController = TextEditingController();
+  final _descriptionController = TextEditingController();
+
   bool _isLoading = false;
   final _eventService = EventService();
 
@@ -24,6 +27,7 @@ class _EditEventPageState extends State<EditEventPage> {
     _titleController.text = widget.event.title;
     _selectedDateTime = widget.event.dateTime;
     _locationController.text = widget.event.location;
+    _descriptionController.text = widget.event.description ?? '';
   }
 
   Future<void> _selectDateTime() async {
@@ -72,6 +76,7 @@ class _EditEventPageState extends State<EditEventPage> {
         title: _titleController.text.trim(),
         dateTime: _selectedDateTime,
         location: _locationController.text.trim(),
+        description: _descriptionController.text.trim(),
       );
 
       if (!mounted) return;
@@ -124,10 +129,14 @@ class _EditEventPageState extends State<EditEventPage> {
           child: Column(
             children: [
               // Title field
-              Text(
-                'Event Title',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Event Title',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
               ),
+
               SizedBox(height: 10),
               TextFormField(
                 controller: _titleController,
@@ -139,7 +148,85 @@ class _EditEventPageState extends State<EditEventPage> {
                 ),
               ),
 
+              // Date and time field
+              SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Event Time and Date',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+              ),
+
+              SizedBox(height: 10),
+              InkWell(
+                onTap: _selectDateTime,
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today, color: Colors.grey),
+                      SizedBox(width: 15),
+                      Text(
+                        DateFormat(
+                          'EEE, MMMM d, yyyy • h:mm a',
+                        ).format(_selectedDateTime),
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Location field
+              SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Location',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+              ),
+
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _locationController,
+                decoration: InputDecoration(
+                  hintText: widget.event.location,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+
+              // Description field
+              SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Description',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+              ),
+
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  hintText: widget.event.description,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                maxLines: 5,
+              ),
+
               // Create button
+              SizedBox(height: 30),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
