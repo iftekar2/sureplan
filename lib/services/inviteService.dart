@@ -83,11 +83,20 @@ class InviteService {
     final response = await _supabase
         .from('event_invites')
         .select('*, invitee:user_profiles!invitee_id(*)')
-        .eq('event_id', eventId)
-        .eq('status', 'going'); // Only fetch confirmed attendees
+        .eq('event_id', eventId); // Fetch all invites regardless of status
 
     return (response as List)
         .map((json) => Invite.fromJson(json as Map<String, dynamic>))
         .toList();
+  }
+
+  /// Get number of invites for an event
+  Future<int> getNumberOfInvites(String eventId) async {
+    final count = await _supabase
+        .from('event_invites')
+        .count()
+        .eq('event_id', eventId);
+
+    return count;
   }
 }

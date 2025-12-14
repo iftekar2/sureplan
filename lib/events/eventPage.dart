@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sureplan/auth/authService.dart';
 import 'package:sureplan/events/editEventPage.dart';
 import 'package:sureplan/events/inviteUsersPage.dart';
 import 'package:sureplan/models/event.dart';
@@ -21,6 +22,7 @@ class _EventPageState extends State<EventPage> {
   late Event _event;
   bool _hasUpdates = false;
   List<Invite> _attendees = [];
+  final _auth = AuthService();
 
   @override
   void initState() {
@@ -203,10 +205,9 @@ class _EventPageState extends State<EventPage> {
                           SizedBox(height: 20),
 
                           Align(
-                            // 💡 FIX 1: Change alignment to center
                             alignment: Alignment.center,
                             child: Text(
-                              "Who's Going:",
+                              "Who's Invited?",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -219,52 +220,123 @@ class _EventPageState extends State<EventPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Container(
-                                height: 50,
-                                width: 200,
-                                child: ListView.separated(
-                                  itemCount: _attendees.length,
-                                  separatorBuilder: (context, index) =>
-                                      SizedBox(width: 10),
-                                  itemBuilder: (context, index) {
-                                    final user = _attendees[index].invitee;
-                                    return Chip(
-                                      avatar: CircleAvatar(
-                                        backgroundColor: Colors.grey[200],
-                                        child: Text(
-                                          user?.username[0].toUpperCase() ??
-                                              '?',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.black,
+                              ..._attendees.take(2).map((invite) {
+                                final user = invite.invitee;
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 5.0),
+                                  child: Row(
+                                    children: [
+                                      Chip(
+                                        avatar: CircleAvatar(
+                                          backgroundColor: Colors.grey[200],
+                                          child: Text(
+                                            user?.username[0].toUpperCase() ??
+                                                '?',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.black,
+                                            ),
                                           ),
                                         ),
+                                        label: Text(
+                                          user?.username ?? 'Unknown',
+                                        ),
+                                        backgroundColor: Colors.white,
+                                        side: BorderSide(
+                                          color: Colors.grey[300]!,
+                                        ),
                                       ),
-                                      label: Text(user?.username ?? 'Unknown'),
-                                      backgroundColor: Colors.white,
-                                      side: BorderSide(
-                                        color: Colors.grey[300]!,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
+                                    ],
+                                  ),
+                                );
+                              }),
 
                               SizedBox(width: 5),
-                              Container(
-                                height: 45,
-                                width: 45,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(color: Colors.grey[300]!),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    _attendees.length.toString(),
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+
+                                    builder: (context) => AlertDialog(
+                                      backgroundColor: Colors.white,
+                                      title: Text("Who's Invited?"),
+                                      content: Container(
+                                        width: double.maxFinite,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: _attendees.length,
+                                          itemBuilder: (context, index) {
+                                            final user =
+                                                _attendees[index].invitee;
+                                            return ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.grey[200],
+                                                child: Text(
+                                                  user?.username[0]
+                                                          .toUpperCase() ??
+                                                      '?',
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                              title: Text(
+                                                user?.username ?? 'Unknown',
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+
+                                      actions: [
+                                        Container(
+                                          width: 100,
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+
+                                          child: TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: Text(
+                                              "Close",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(100),
+                                    border: Border.all(
+                                      color: Colors.grey[300]!,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      _attendees.length.toString(),
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -280,7 +352,7 @@ class _EventPageState extends State<EventPage> {
                 if (_attendees.isNotEmpty) ...[
                   SizedBox(height: 20),
                   Container(
-                    height: 250,
+                    height: 180,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -297,33 +369,6 @@ class _EventPageState extends State<EventPage> {
                       ),
                       child: Column(
                         children: [
-                          Text(
-                            'Number of Invites',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-
-                          SizedBox(height: 10),
-                          FutureBuilder(
-                            future: _inviteService.getAttendees(_event.id),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return Text(
-                                  snapshot.data!.length.toString(),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                );
-                              } else {
-                                return Text('0');
-                              }
-                            },
-                          ),
-
-                          SizedBox(height: 10),
                           Text(
                             'Invite Status',
                             style: TextStyle(
@@ -460,19 +505,9 @@ class _EventPageState extends State<EventPage> {
                   ),
                 ],
 
-                SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            InviteUsersPage(eventId: _event.id),
-                      ),
-                    );
-                  },
-
-                  child: TextButton(
+                if (_event.createdBy == _auth.user?.id) ...[
+                  SizedBox(height: 10),
+                  TextButton(
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
@@ -480,7 +515,6 @@ class _EventPageState extends State<EventPage> {
                       side: BorderSide(color: Colors.grey[400]!),
                       minimumSize: Size(250, 55),
                     ),
-
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -490,7 +524,6 @@ class _EventPageState extends State<EventPage> {
                         ),
                       );
                     },
-
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -507,90 +540,46 @@ class _EventPageState extends State<EventPage> {
                       ],
                     ),
                   ),
-                ),
 
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        splashFactory: NoSplash.splashFactory,
-                        elevation: 0,
-                        side: BorderSide(color: Colors.grey[400]!),
-                        minimumSize: Size(150, 50),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          splashFactory: NoSplash.splashFactory,
+                          elevation: 0,
+                          side: BorderSide(color: Colors.grey[400]!),
+                          minimumSize: Size(150, 50),
+                        ),
+                        onPressed: () => _confirmDelete(),
+                        child: Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.black, fontSize: 18),
+                        ),
                       ),
-
-                      onPressed: () => _confirmDelete(),
-                      child: Text(
-                        'Delete',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      SizedBox(width: 20),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          splashFactory: NoSplash.splashFactory,
+                          elevation: 0,
+                          side: BorderSide(color: Colors.grey[400]!),
+                          minimumSize: Size(150, 50),
+                        ),
+                        onPressed: _navigateToEditEvent,
+                        child: Text(
+                          'Edit',
+                          style: TextStyle(color: Colors.black, fontSize: 18),
+                        ),
                       ),
-                    ),
-
-                    SizedBox(width: 20),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        splashFactory: NoSplash.splashFactory,
-                        elevation: 0,
-                        side: BorderSide(color: Colors.grey[400]!),
-                        minimumSize: Size(150, 50),
-                      ),
-                      onPressed: _navigateToEditEvent,
-                      child: Text(
-                        'Edit',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                      ),
-                    ),
-                  ],
-                ),
-
-                // if (_attendees.isNotEmpty) ...[
-                //   SizedBox(height: 20),
-                //   Align(
-                //     alignment: Alignment.centerLeft,
-                //     child: Text(
-                //       "Who's Going:",
-                //       style: TextStyle(
-                //         fontSize: 18,
-                //         fontWeight: FontWeight.bold,
-                //       ),
-                //     ),
-                //   ),
-
-                //   SizedBox(height: 10),
-                //   Container(
-                //     height: 50,
-                //     child: ListView.separated(
-                //       scrollDirection: Axis.horizontal,
-                //       itemCount: _attendees.length,
-                //       separatorBuilder: (context, index) => SizedBox(width: 10),
-                //       itemBuilder: (context, index) {
-                //         final user = _attendees[index].invitee;
-                //         return Chip(
-                //           avatar: CircleAvatar(
-                //             backgroundColor: Colors.grey[200],
-                //             child: Text(
-                //               user?.username[0].toUpperCase() ?? '?',
-                //               style: TextStyle(
-                //                 fontSize: 12,
-                //                 color: Colors.black,
-                //               ),
-                //             ),
-                //           ),
-                //           label: Text(user?.username ?? 'Unknown'),
-                //           backgroundColor: Colors.white,
-                //           side: BorderSide(color: Colors.grey[300]!),
-                //         );
-                //       },
-                //     ),
-                //   ),
-                // ],
+                    ],
+                  ),
+                ],
               ],
             ),
           ),

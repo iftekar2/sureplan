@@ -128,4 +128,7 @@ class AuthService {
   Future<void> updatePassword(String password) async {
     await _supabase.auth.updateUser(UserAttributes(password: password));
   }
+
+  // Get current user
+  User? get user => _supabase.auth.currentUser;
 }
