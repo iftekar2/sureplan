@@ -138,40 +138,142 @@ class _EventPageState extends State<EventPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  _event.title,
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-                ),
+                Container(
+                  height: 300,
+                  width: double.infinity,
 
-                SizedBox(height: 10),
-                Text(
-                  _event.location,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey[400]!),
                   ),
-                ),
-                if (_event.description != null &&
-                    _event.description!.isNotEmpty) ...[
-                  SizedBox(height: 10),
-                  Text(
-                    _event.description!,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey[600],
+
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: 10,
+                      left: 20,
+                      right: 20,
+                      bottom: 10,
                     ),
-                  ),
-                ],
+                    child: Column(
+                      children: [
+                        Text(
+                          _event.title,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
 
-                SizedBox(height: 10),
-                Text(
-                  DateFormat('MMM d, y • h:mm a').format(_event.dateTime),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
+                        SizedBox(height: 10),
+                        Text(
+                          _event.location,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        if (_event.description != null &&
+                            _event.description!.isNotEmpty) ...[
+                          SizedBox(height: 10),
+                          Text(
+                            _event.description!,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+
+                        SizedBox(height: 10),
+                        Text(
+                          DateFormat(
+                            'MMM d, y • h:mm a',
+                          ).format(_event.dateTime),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+
+                        if (_attendees.isNotEmpty) ...[
+                          SizedBox(height: 20),
+
+                          Align(
+                            // 💡 FIX 1: Change alignment to center
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Who's Going:",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                height: 50,
+                                width: 200,
+                                child: ListView.separated(
+                                  itemCount: _attendees.length,
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(width: 10),
+                                  itemBuilder: (context, index) {
+                                    final user = _attendees[index].invitee;
+                                    return Chip(
+                                      avatar: CircleAvatar(
+                                        backgroundColor: Colors.grey[200],
+                                        child: Text(
+                                          user?.username[0].toUpperCase() ??
+                                              '?',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      label: Text(user?.username ?? 'Unknown'),
+                                      backgroundColor: Colors.white,
+                                      side: BorderSide(
+                                        color: Colors.grey[300]!,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+
+                              SizedBox(width: 5),
+                              Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(100),
+                                  border: Border.all(color: Colors.grey[300]!),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    _attendees.length.toString(),
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
 
