@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/auth/authService.dart';
 import 'package:sureplan/settings/accountPage.dart';
+import 'package:sureplan/home/invitationsPage.dart';
 import 'package:sureplan/welcome/welcomePage.dart';
 
 class Profile extends StatefulWidget {
@@ -153,6 +154,33 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: 5),
 
             AccountPage(),
+
+            SizedBox(height: 15),
+
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.mail_outline, color: Colors.black),
+              ),
+              title: Text(
+                'My Invitations',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+              ),
+              trailing: Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const InvitationsPage(),
+                  ),
+                );
+              },
+            ),
 
             Spacer(),
 

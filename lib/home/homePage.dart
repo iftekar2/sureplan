@@ -279,17 +279,14 @@ class _HomePageState extends State<HomePage> {
                               ),
 
                               SizedBox(width: 10),
-                              Container(
-                                width: 200,
-                                child: Text(
-                                  event.location,
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                    fontSize: 20,
-                                  ),
-
-                                  overflow: TextOverflow.ellipsis,
+                              Text(
+                                event.location,
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 20,
                                 ),
+
+                                //overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),

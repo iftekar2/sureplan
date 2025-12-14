@@ -107,16 +107,46 @@ class EventService {
   /// Get upcoming events (future events only)
   Future<List<Event>> getUpcomingEvents() async {
     final now = DateTime.now().toIso8601String();
+    final userId = _supabase.auth.currentUser?.id;
 
-    final response = await _supabase
+    if (userId == null) return [];
+
+    // 1. Fetch events created by current user
+    final createdResponse = await _supabase
         .from('events')
         .select()
+        .eq('created_by', userId)
         .gte('date_time', now)
         .order('date_time', ascending: true);
 
-    return (response as List)
+    final createdEvents = (createdResponse as List)
         .map((json) => Event.fromJson(json as Map<String, dynamic>))
         .toList();
+
+    // 2. Fetch events where current user is invited and "going"
+    final invitedResponse = await _supabase
+        .from('event_invites')
+        .select('events(*)')
+        .eq('invitee_id', userId)
+        .eq('status', 'going');
+
+    final invitedEvents = (invitedResponse as List)
+        .map((json) => json['events'])
+        .where((eventJson) => eventJson != null)
+        .map((eventJson) => Event.fromJson(eventJson as Map<String, dynamic>))
+        .where((event) => event.dateTime.isAfter(DateTime.now()))
+        .toList();
+
+    // 3. Merge and sort
+    final allEvents = [...createdEvents, ...invitedEvents];
+
+    // Deduplicate by ID
+    final uniqueEvents = {for (var e in allEvents) e.id: e}.values.toList();
+
+    // Sort by date
+    uniqueEvents.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+
+    return uniqueEvents;
   }
 
   /// Get past events

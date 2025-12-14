@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/events/editEventPage.dart';
+import 'package:sureplan/events/inviteUsersPage.dart';
 import 'package:sureplan/models/event.dart';
+import 'package:sureplan/models/invite.dart';
 import 'package:sureplan/services/eventService.dart';
+import 'package:sureplan/services/inviteService.dart';
 
 class EventPage extends StatefulWidget {
   final Event event;
@@ -14,8 +18,10 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage> {
   final _eventService = EventService();
+  final _inviteService = InviteService();
   late Event _event;
   bool _hasUpdates = false;
+  List<Invite> _attendees = [];
 
   @override
   void initState() {
@@ -32,9 +38,11 @@ class _EventPageState extends State<EventPage> {
 
   Future<void> _refreshEvent() async {
     final updatedEvent = await _eventService.getEventById(widget.event.id);
+    final attendees = await _inviteService.getAttendees(widget.event.id);
     if (!mounted) return;
     setState(() {
       _event = updatedEvent;
+      _attendees = attendees;
     });
   }
 
@@ -208,6 +216,67 @@ class _EventPageState extends State<EventPage> {
                     ),
                   ],
                 ),
+
+                if (Supabase.instance.client.auth.currentUser?.id ==
+                    _event.createdBy) ...[
+                  SizedBox(height: 20),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              InviteUsersPage(eventId: _event.id),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Invite Friends',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ],
+
+                if (_attendees.isNotEmpty) ...[
+                  SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Who's Going:",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    height: 50,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _attendees.length,
+                      separatorBuilder: (context, index) => SizedBox(width: 10),
+                      itemBuilder: (context, index) {
+                        final user = _attendees[index].invitee;
+                        return Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey[200],
+                            child: Text(
+                              user?.username[0].toUpperCase() ?? '?',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          label: Text(user?.username ?? 'Unknown'),
+                          backgroundColor: Colors.white,
+                          side: BorderSide(color: Colors.grey[300]!),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
