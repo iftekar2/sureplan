@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/events/editEventPage.dart';
 import 'package:sureplan/events/inviteUsersPage.dart';
 import 'package:sureplan/models/event.dart';
@@ -176,7 +175,239 @@ class _EventPageState extends State<EventPage> {
                   ),
                 ),
 
-                SizedBox(height: 30),
+                if (_attendees.isNotEmpty) ...[
+                  SizedBox(height: 20),
+                  Container(
+                    height: 250,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey[400]!),
+                    ),
+
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: 10,
+                        left: 20,
+                        right: 20,
+                        bottom: 10,
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Number of Invites',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+
+                          SizedBox(height: 10),
+                          FutureBuilder(
+                            future: _inviteService.getAttendees(_event.id),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  snapshot.data!.length.toString(),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                );
+                              } else {
+                                return Text('0');
+                              }
+                            },
+                          ),
+
+                          SizedBox(height: 10),
+                          Text(
+                            'Invite Status',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5),
+                                    Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                      size: 30,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      'Going',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+
+                                    SizedBox(height: 3),
+                                    Text(
+                                      "${_attendees.where((a) => a.status == 'going').length}",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5),
+                                    Icon(
+                                      Icons.remove_circle,
+                                      color: Colors.red,
+                                      size: 30,
+                                    ),
+
+                                    SizedBox(height: 5),
+                                    Text(
+                                      'Not Going',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+
+                                    SizedBox(height: 3),
+                                    Text(
+                                      "${_attendees.where((a) => a.status == 'notgoing').length}",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5),
+                                    Icon(
+                                      Icons.question_mark,
+                                      color: Colors.blue,
+                                      size: 30,
+                                    ),
+
+                                    SizedBox(height: 5),
+                                    Text(
+                                      'Maybe',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+
+                                    SizedBox(height: 3),
+                                    Text(
+                                      "${_attendees.where((a) => a.status == 'maybe').length}",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+
+                SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            InviteUsersPage(eventId: _event.id),
+                      ),
+                    );
+                  },
+
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      elevation: 0,
+                      side: BorderSide(color: Colors.grey[400]!),
+                      minimumSize: Size(250, 55),
+                    ),
+
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              InviteUsersPage(eventId: _event.id),
+                        ),
+                      );
+                    },
+
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.people, size: 30),
+                        SizedBox(width: 10),
+                        Text(
+                          'Invite Friends',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -217,66 +448,47 @@ class _EventPageState extends State<EventPage> {
                   ],
                 ),
 
-                if (Supabase.instance.client.auth.currentUser?.id ==
-                    _event.createdBy) ...[
-                  SizedBox(height: 20),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              InviteUsersPage(eventId: _event.id),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Invite Friends',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                ],
+                // if (_attendees.isNotEmpty) ...[
+                //   SizedBox(height: 20),
+                //   Align(
+                //     alignment: Alignment.centerLeft,
+                //     child: Text(
+                //       "Who's Going:",
+                //       style: TextStyle(
+                //         fontSize: 18,
+                //         fontWeight: FontWeight.bold,
+                //       ),
+                //     ),
+                //   ),
 
-                if (_attendees.isNotEmpty) ...[
-                  SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Who's Going:",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    height: 50,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _attendees.length,
-                      separatorBuilder: (context, index) => SizedBox(width: 10),
-                      itemBuilder: (context, index) {
-                        final user = _attendees[index].invitee;
-                        return Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey[200],
-                            child: Text(
-                              user?.username[0].toUpperCase() ?? '?',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          label: Text(user?.username ?? 'Unknown'),
-                          backgroundColor: Colors.white,
-                          side: BorderSide(color: Colors.grey[300]!),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                //   SizedBox(height: 10),
+                //   Container(
+                //     height: 50,
+                //     child: ListView.separated(
+                //       scrollDirection: Axis.horizontal,
+                //       itemCount: _attendees.length,
+                //       separatorBuilder: (context, index) => SizedBox(width: 10),
+                //       itemBuilder: (context, index) {
+                //         final user = _attendees[index].invitee;
+                //         return Chip(
+                //           avatar: CircleAvatar(
+                //             backgroundColor: Colors.grey[200],
+                //             child: Text(
+                //               user?.username[0].toUpperCase() ?? '?',
+                //               style: TextStyle(
+                //                 fontSize: 12,
+                //                 color: Colors.black,
+                //               ),
+                //             ),
+                //           ),
+                //           label: Text(user?.username ?? 'Unknown'),
+                //           backgroundColor: Colors.white,
+                //           side: BorderSide(color: Colors.grey[300]!),
+                //         );
+                //       },
+                //     ),
+                //   ),
+                // ],
               ],
             ),
           ),
