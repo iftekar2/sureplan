@@ -103,6 +103,7 @@ class GoogleSignInService {
           'id': response.user!.id,
           'username': googleUser.displayName ?? 'Google User',
           'email': response.user!.email,
+          'notification': true,
         });
       } catch (e) {
         // Log error but don't fail the authentication

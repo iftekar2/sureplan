@@ -56,6 +56,7 @@ class AuthService {
           'id': response.user!.id,
           'username': displayName,
           'email': email,
+          'notification': true,
         });
       } catch (e) {
         print('Warning: Failed to create user profile: $e');
