@@ -128,7 +128,10 @@ class EventService {
         .from('event_invites')
         .select('events(*)')
         .eq('invitee_id', userId)
-        .eq('status', 'going');
+        .neq(
+          'status',
+          'pending',
+        ); // Show all responded events (going, maybe, not_going)
 
     final invitedEvents = (invitedResponse as List)
         .map((json) => json['events'])

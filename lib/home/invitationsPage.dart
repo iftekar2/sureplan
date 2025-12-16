@@ -53,6 +53,7 @@ class _InvitationsPageState extends State<InvitationsPage> {
       setState(() {
         _invites.removeWhere((i) => i.id == inviteId);
       });
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

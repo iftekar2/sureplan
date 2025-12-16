@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:sureplan/home/homePage.dart';
+import 'package:sureplan/main_scaffold.dart';
 import 'package:sureplan/welcome/welcomePage.dart';
 
 class AuthGate extends StatelessWidget {
@@ -26,7 +26,7 @@ class AuthGate extends StatelessWidget {
 
         // Authenticated state
         if (session != null) {
-          return const HomePage();
+          return const MainScaffold();
         } else {
           return const WelcomePage();
         }

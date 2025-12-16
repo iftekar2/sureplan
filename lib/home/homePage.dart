@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
+
 import 'package:sureplan/events/createEventPage.dart';
 import 'package:sureplan/events/eventPage.dart';
 import 'package:sureplan/models/event.dart';

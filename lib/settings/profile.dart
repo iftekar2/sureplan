@@ -167,10 +167,12 @@ class _ProfileState extends State<Profile> {
                 ),
                 child: Icon(Icons.mail_outline, color: Colors.black),
               ),
+
               title: Text(
                 'My Invitations',
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
+
               trailing: Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
                 Navigator.push(
