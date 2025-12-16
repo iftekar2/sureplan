@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'package:sureplan/events/selectInviteesPage.dart';
+import 'package:sureplan/models/user_profile.dart';
 import 'package:sureplan/services/eventService.dart';
+import 'package:sureplan/services/inviteService.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -15,8 +19,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final _locationController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _eventService = EventService();
+  final _inviteService = InviteService();
 
   DateTime _selectedDateTime = DateTime.now().add(Duration(hours: 1));
+  List<UserProfile> _selectedInvitees = [];
   bool _isLoading = false;
 
   @override
@@ -66,18 +72,37 @@ class _CreateEventPageState extends State<CreateEventPage> {
     });
 
     try {
-      await _eventService.createEvent(
+      final createdEvent = await _eventService.createEvent(
         title: _titleController.text.trim(),
         dateTime: _selectedDateTime,
         location: _locationController.text.trim(),
         description: _descriptionController.text.trim(),
       );
 
+      // Send invites to selected users
+      if (_selectedInvitees.isNotEmpty) {
+        for (var user in _selectedInvitees) {
+          try {
+            await _inviteService.sendInvite(
+              eventId: createdEvent.id,
+              inviteeId: user.id,
+            );
+          } catch (e) {
+            print('Failed to invite ${user.username}: $e');
+            // Continue inviting others even if one fails
+          }
+        }
+      }
+
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Event created successfully!'),
+          content: Text(
+            _selectedInvitees.isNotEmpty
+                ? 'Event created and invites sent!'
+                : 'Event created successfully!',
+          ),
           backgroundColor: Colors.green,
         ),
       );
@@ -217,6 +242,54 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   ),
                 ),
                 maxLines: 5,
+              ),
+
+              SizedBox(height: 20),
+
+              // Invite friends
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  elevation: 0,
+                  side: BorderSide(color: Colors.grey[400]!),
+                  minimumSize: Size(250, 55),
+                ),
+
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SelectInviteesPage(
+                        alreadySelected: _selectedInvitees,
+                      ),
+                    ),
+                  );
+
+                  if (result != null && result is List<UserProfile>) {
+                    setState(() {
+                      _selectedInvitees = result;
+                    });
+                  }
+                },
+
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.people, size: 30),
+                    SizedBox(width: 10),
+                    Text(
+                      _selectedInvitees.isEmpty
+                          ? 'Invite Friends'
+                          : '${_selectedInvitees.length} Friends Selected',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               SizedBox(height: 40),

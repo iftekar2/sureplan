@@ -18,7 +18,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final EventService _eventService = EventService();
   late Future<List<Event>> _eventsFuture;
-  late Event _event;
 
   @override
   void initState() {
@@ -177,9 +176,7 @@ class _HomePageState extends State<HomePage> {
             },
             child: ListView.builder(
               padding: EdgeInsets.all(20),
-              itemCount:
-                  events.length +
-                  1, // Add 1 for the "Create Event" button at bottom or top
+              itemCount: events.length + 1,
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return Padding(
@@ -286,8 +283,6 @@ class _HomePageState extends State<HomePage> {
                                   color: Colors.grey[700],
                                   fontSize: 20,
                                 ),
-
-                                //overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),

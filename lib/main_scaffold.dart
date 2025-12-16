@@ -24,6 +24,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(index: _selectedIndex, children: _pages),
+
       bottomNavigationBar: BottomNavigationBar(
         selectedLabelStyle: TextStyle(color: Colors.black, fontSize: 14),
         unselectedLabelStyle: TextStyle(color: Colors.black, fontSize: 12),
@@ -39,6 +40,7 @@ class _MainScaffoldState extends State<MainScaffold> {
             icon: Icon(Icons.home, size: 35),
             label: 'Home',
           ),
+
           BottomNavigationBarItem(
             icon: Icon(Icons.email, size: 35),
             label: 'Email',

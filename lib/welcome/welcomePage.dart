@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sureplan/home/homePage.dart';
+import 'package:sureplan/auth/authGate.dart';
 import 'package:sureplan/login/loginPage.dart';
 import 'package:sureplan/signup/signupPage.dart';
 import 'package:sureplan/auth/googleSignInService.dart';
@@ -25,7 +25,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => const AuthGate()),
       );
     } catch (e) {
       // Check if widget is still mounted before showing error

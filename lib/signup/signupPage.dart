@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sureplan/auth/authGate.dart';
 import 'package:sureplan/auth/authService.dart';
 import 'package:sureplan/auth/googleSignInService.dart';
-import 'package:sureplan/home/homePage.dart';
 import 'package:sureplan/login/loginPage.dart';
 import 'package:sureplan/main.dart';
 
@@ -87,9 +87,10 @@ class _SignupPageState extends State<SignupPage> {
       // Check if widget is still mounted before navigation
       if (!mounted) return;
 
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => const AuthGate()),
+        (route) => false,
       );
     } catch (e) {
       // Check if widget is still mounted before showing error
@@ -124,9 +125,10 @@ class _SignupPageState extends State<SignupPage> {
       // Check if widget is still mounted before navigation
       if (!mounted) return;
 
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => const AuthGate()),
+        (route) => false,
       );
     } catch (e) {
       // Check if widget is still mounted before showing error

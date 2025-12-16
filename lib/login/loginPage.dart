@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sureplan/auth/authGate.dart';
 import 'package:sureplan/auth/authService.dart';
 import 'package:sureplan/forgot_password/forgotPasswordPage.dart';
 import 'package:sureplan/home/homePage.dart';
