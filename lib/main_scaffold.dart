@@ -12,9 +12,21 @@ class MainScaffold extends StatefulWidget {
 class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [const HomePage(), const InvitationsPage()];
+  late final List<Key> _pageKeys = [UniqueKey(), UniqueKey()];
+  late final List<Widget> _pages = [
+    HomePage(key: _pageKeys[0]),
+    InvitationsPage(key: _pageKeys[1]),
+  ];
 
   void _onItemTapped(int index) {
+    if (index == _selectedIndex) {
+      setState(() {
+        _pageKeys[index] = UniqueKey();
+        _pages[0] = HomePage(key: _pageKeys[0]);
+        _pages[1] = InvitationsPage(key: _pageKeys[1]);
+      });
+    }
+
     setState(() {
       _selectedIndex = index;
     });

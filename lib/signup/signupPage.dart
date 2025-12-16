@@ -173,15 +173,6 @@ class _SignupPageState extends State<SignupPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Image(
-                image: NetworkImage(
-                  "https://img.freepik.com/free-vector/retro-cartoon-coloring-illustration_23-2151296685.jpg",
-                ),
-                height: 210,
-                width: 210,
-              ),
-
-              //SizedBox(height: 10),
               Form(
                 key: _formKey,
                 child: Column(

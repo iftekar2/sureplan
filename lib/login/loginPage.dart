@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sureplan/auth/authGate.dart';
 import 'package:sureplan/auth/authService.dart';
 import 'package:sureplan/forgot_password/forgotPasswordPage.dart';
 import 'package:sureplan/home/homePage.dart';
+import 'package:sureplan/main_scaffold.dart';
 import 'package:sureplan/signup/signupPage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
       // Navigate to home page
       if (context.mounted) {
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => const MainScaffold()),
           (Route<dynamic> route) => false,
         );
       }
