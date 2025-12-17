@@ -171,7 +171,8 @@ class _SignupPageState extends State<SignupPage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Form(
                 key: _formKey,
@@ -181,6 +182,7 @@ class _SignupPageState extends State<SignupPage> {
                       controller: _emailController,
                       maxLines: null,
                       validator: validateEmail,
+
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -221,7 +223,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
 
                         contentPadding: EdgeInsets.symmetric(
-                          vertical: 12,
+                          vertical: 16,
                           horizontal: 12,
                         ),
 
@@ -231,7 +233,7 @@ class _SignupPageState extends State<SignupPage> {
                       style: TextStyle(fontSize: 20),
                     ),
 
-                    SizedBox(height: 15),
+                    SizedBox(height: 25),
 
                     TextFormField(
                       controller: _usernameController,
@@ -277,7 +279,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
 
                         contentPadding: EdgeInsets.symmetric(
-                          vertical: 12,
+                          vertical: 16,
                           horizontal: 12,
                         ),
 
@@ -287,7 +289,7 @@ class _SignupPageState extends State<SignupPage> {
                       style: TextStyle(fontSize: 20),
                     ),
 
-                    SizedBox(height: 15),
+                    SizedBox(height: 25),
 
                     TextFormField(
                       controller: _passwordController,
@@ -334,7 +336,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
 
                         contentPadding: EdgeInsets.symmetric(
-                          vertical: 12,
+                          vertical: 16,
                           horizontal: 12,
                         ),
 
@@ -358,7 +360,7 @@ class _SignupPageState extends State<SignupPage> {
                       style: TextStyle(fontSize: 18),
                     ),
 
-                    SizedBox(height: 15),
+                    SizedBox(height: 25),
 
                     TextFormField(
                       controller: _confirmPasswordController,
@@ -405,7 +407,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
 
                         contentPadding: EdgeInsets.symmetric(
-                          vertical: 12,
+                          vertical: 16,
                           horizontal: 12,
                         ),
 
@@ -430,7 +432,7 @@ class _SignupPageState extends State<SignupPage> {
                       style: TextStyle(fontSize: 18),
                     ),
 
-                    SizedBox(height: 15),
+                    SizedBox(height: 20),
 
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -478,50 +480,48 @@ class _SignupPageState extends State<SignupPage> {
                       ],
                     ),
 
-                    SizedBox(height: 10),
+                    // SizedBox(height: 10),
 
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          side: BorderSide(
-                            color: const Color.fromARGB(255, 177, 177, 177),
-                          ),
-                        ),
+                    // ElevatedButton(
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor: Colors.white,
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(15),
+                    //       side: BorderSide(
+                    //         color: const Color.fromARGB(255, 177, 177, 177),
+                    //       ),
+                    //     ),
 
-                        minimumSize: Size(double.infinity, 55),
-                      ),
+                    //     minimumSize: Size(double.infinity, 55),
+                    //   ),
 
-                      onPressed: signupWithGoogle,
+                    //   onPressed: signupWithGoogle,
 
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            "lib/welcome/google-logo.png",
-                            height: 30,
-                            width: 30,
-                          ),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       Image.asset(
+                    //         "lib/welcome/google-logo.png",
+                    //         height: 30,
+                    //         width: 30,
+                    //       ),
 
-                          SizedBox(width: 10),
+                    //       SizedBox(width: 10),
 
-                          Text(
-                            "Sign up with Google",
-                            style: TextStyle(color: Colors.black, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                    ),
-
+                    //       Text(
+                    //         "Sign up with Google",
+                    //         style: TextStyle(color: Colors.black, fontSize: 18),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     SizedBox(height: 20),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "Already have an account?",
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: 18),
                         ),
 
                         SizedBox(width: 5),
@@ -538,7 +538,7 @@ class _SignupPageState extends State<SignupPage> {
                           child: Text(
                             "Log in",
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

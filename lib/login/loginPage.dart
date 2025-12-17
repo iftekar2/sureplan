@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sureplan/auth/authService.dart';
 import 'package:sureplan/forgot_password/forgotPasswordPage.dart';
-import 'package:sureplan/home/homePage.dart';
 import 'package:sureplan/main_scaffold.dart';
 import 'package:sureplan/signup/signupPage.dart';
 
@@ -279,7 +278,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Text(
                           "Don't have an account?",
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: 18),
                         ),
 
                         SizedBox(width: 5),
@@ -296,7 +295,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Text(
                             "Sign Up",
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

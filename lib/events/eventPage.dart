@@ -156,7 +156,6 @@ class _EventPageState extends State<EventPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  height: 300,
                   width: double.infinity,
 
                   decoration: BoxDecoration(
@@ -166,12 +165,7 @@ class _EventPageState extends State<EventPage> {
                   ),
 
                   child: Padding(
-                    padding: EdgeInsets.only(
-                      top: 10,
-                      left: 20,
-                      right: 20,
-                      bottom: 10,
-                    ),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     child: Column(
                       children: [
                         Text(

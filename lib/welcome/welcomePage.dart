@@ -59,6 +59,7 @@ class _WelcomePageState extends State<WelcomePage> {
             ),
           ),
         ),
+
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -98,7 +99,6 @@ class _WelcomePageState extends State<WelcomePage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 40),
                 child: SizedBox(
-                  height: 300,
                   width: double.infinity,
                   child: Container(
                     decoration: BoxDecoration(
@@ -107,7 +107,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     ),
 
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(top: 20, bottom: 20),
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Column(
@@ -139,9 +139,9 @@ class _WelcomePageState extends State<WelcomePage> {
                               ),
                             ),
 
-                            SizedBox(height: 10),
+                            SizedBox(height: 20),
 
-                            TextButton(
+                            ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -150,66 +150,76 @@ class _WelcomePageState extends State<WelcomePage> {
                                   ),
                                 );
                               },
+
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                elevation: 0,
+                                minimumSize: Size(300, 60),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: BorderSide(color: Colors.grey[400]!),
+                                ),
+                              ),
                               child: Text(
                                 "I already have an account",
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 18,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
 
-                            SizedBox(height: 10),
-                            Divider(thickness: 0.3, color: Colors.black),
-                            SizedBox(height: 10),
+                            // SizedBox(height: 10),
+                            // Divider(thickness: 0.3, color: Colors.black),
+                            // SizedBox(height: 10),
 
-                            Text(
-                              "Sign up with",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: const Color.fromARGB(255, 99, 99, 99),
-                              ),
-                            ),
+                            // Text(
+                            //   "Sign up with",
+                            //   style: TextStyle(
+                            //     fontSize: 18,
+                            //     color: const Color.fromARGB(255, 99, 99, 99),
+                            //   ),
+                            // ),
 
-                            SizedBox(height: 20),
+                            // SizedBox(height: 20),
 
-                            ElevatedButton(
-                              onPressed: signupWithGoogle,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                padding: EdgeInsets.zero,
-                                minimumSize: Size.zero,
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                shadowColor: Colors.transparent,
-                                surfaceTintColor: Colors.transparent,
-                              ),
-                              child: SizedBox(
-                                height: 60,
-                                width: 60,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: const Color.fromARGB(
-                                        255,
-                                        196,
-                                        196,
-                                        196,
-                                      ),
-                                    ),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Image.asset(
-                                    "lib/welcome/google-logo.png",
-                                    height: 40,
-                                    width: 40,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            // ElevatedButton(
+                            //   onPressed: signupWithGoogle,
+                            //   style: ElevatedButton.styleFrom(
+                            //     backgroundColor: Colors.transparent,
+                            //     elevation: 0,
+                            //     padding: EdgeInsets.zero,
+                            //     minimumSize: Size.zero,
+                            //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            //     shadowColor: Colors.transparent,
+                            //     surfaceTintColor: Colors.transparent,
+                            //   ),
+                            //   child: SizedBox(
+                            //     height: 60,
+                            //     width: 60,
+                            //     child: Container(
+                            //       decoration: BoxDecoration(
+                            //         borderRadius: BorderRadius.circular(100),
+                            //         color: Colors.white,
+                            //         border: Border.all(
+                            //           color: const Color.fromARGB(
+                            //             255,
+                            //             196,
+                            //             196,
+                            //             196,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       alignment: Alignment.center,
+                            //       child: Image.asset(
+                            //         "lib/welcome/google-logo.png",
+                            //         height: 40,
+                            //         width: 40,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
