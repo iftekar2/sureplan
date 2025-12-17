@@ -83,6 +83,7 @@ class _InvitationsPageState extends State<InvitationsPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
+
       backgroundColor: Colors.white,
       body: _isLoading
           ? Center(child: CircularProgressIndicator(color: Colors.black))
@@ -108,101 +109,167 @@ class _InvitationsPageState extends State<InvitationsPage> {
                 final event = invite.event;
                 final inviter = invite.inviter;
 
-                if (event == null)
-                  return SizedBox.shrink(); // Should not happen with inner join
+                if (event == null) return SizedBox.shrink();
 
                 return Card(
                   margin: EdgeInsets.only(bottom: 15),
-                  elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
+                    side: BorderSide(color: Colors.grey[400]!),
                   ),
+                  color: Colors.white,
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
+
                   child: Padding(
                     padding: EdgeInsets.all(15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CircleAvatar(
-                              radius: 20,
+                              radius: 30,
                               backgroundColor: Colors.grey[200],
-                              child: Icon(Icons.person, color: Colors.black),
+                              child: Icon(
+                                Icons.person,
+                                color: Colors.black,
+                                size: 60,
+                              ),
                             ),
-                            SizedBox(width: 10),
+
+                            SizedBox(width: 20),
                             Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                        ),
+
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                inviter?.username ?? 'Someone',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+
+                                          TextSpan(text: ' invited you to '),
+
+                                          TextSpan(
+                                            text: event.title,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                  children: [
-                                    TextSpan(
-                                      text: inviter?.username ?? 'Someone',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+
+                                  SizedBox(height: 10),
+
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.calendar_today,
+                                        size: 20,
+                                        color: Colors.grey,
                                       ),
-                                    ),
-                                    TextSpan(text: ' invited you to '),
-                                    TextSpan(
-                                      text: event.title,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+
+                                      SizedBox(width: 5),
+                                      Text(
+                                        DateFormat(
+                                          'MMM d, h:mm a',
+                                        ).format(event.dateTime),
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 18,
+                                          //fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_today,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              DateFormat(
-                                'MMM d, h:mm a',
-                              ).format(event.dateTime),
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ],
-                        ),
+
                         SizedBox(height: 15),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            TextButton(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(color: Colors.grey[400]!),
+                                ),
+                              ),
                               onPressed: () => _respond(invite.id, 'not_going'),
                               child: Text(
                                 'Decline',
-                                style: TextStyle(color: Colors.red),
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
-                            TextButton(
+
+                            SizedBox(width: 10),
+
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(color: Colors.grey[400]!),
+                                ),
+                              ),
                               onPressed: () => _respond(invite.id, 'maybe'),
                               child: Text(
                                 'Maybe',
-                                style: TextStyle(color: Colors.orange),
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
+
+                            SizedBox(width: 10),
+
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
+                                backgroundColor: Colors.white,
+                                elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(color: Colors.grey[400]!),
                                 ),
                               ),
                               onPressed: () => _respond(invite.id, 'going'),
                               child: Text(
                                 'Accept',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ],
