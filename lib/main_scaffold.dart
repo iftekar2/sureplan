@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sureplan/home/homePage.dart';
 import 'package:sureplan/home/invitationsPage.dart';
+import 'package:sureplan/new_idea/IdeaPage.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
@@ -12,10 +13,11 @@ class MainScaffold extends StatefulWidget {
 class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 0;
 
-  late final List<Key> _pageKeys = [UniqueKey(), UniqueKey()];
+  late final List<Key> _pageKeys = [UniqueKey(), UniqueKey(), UniqueKey()];
   late final List<Widget> _pages = [
     HomePage(key: _pageKeys[0]),
     InvitationsPage(key: _pageKeys[1]),
+    IdeaPage(key: _pageKeys[2]),
   ];
 
   void _onItemTapped(int index) {
@@ -24,6 +26,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         _pageKeys[index] = UniqueKey();
         _pages[0] = HomePage(key: _pageKeys[0]);
         _pages[1] = InvitationsPage(key: _pageKeys[1]);
+        _pages[2] = IdeaPage(key: _pageKeys[2]);
       });
     }
 
@@ -56,6 +59,11 @@ class _MainScaffoldState extends State<MainScaffold> {
           BottomNavigationBarItem(
             icon: Icon(Icons.email, size: 35),
             label: 'Email',
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.lightbulb_outline, size: 35),
+            label: 'Ideas',
           ),
         ],
       ),

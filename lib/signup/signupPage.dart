@@ -118,33 +118,33 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   // Google Sign-In button pressed
-  void signupWithGoogle() async {
-    try {
-      await GoogleSignInService.signInWithGoogle(supabase);
+  // void signupWithGoogle() async {
+  //   try {
+  //     await GoogleSignInService.signInWithGoogle(supabase);
 
-      // Check if widget is still mounted before navigation
-      if (!mounted) return;
+  //     // Check if widget is still mounted before navigation
+  //     if (!mounted) return;
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const AuthGate()),
-        (route) => false,
-      );
-    } catch (e) {
-      // Check if widget is still mounted before showing error
-      if (!mounted) return;
+  //     Navigator.pushAndRemoveUntil(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => const AuthGate()),
+  //       (route) => false,
+  //     );
+  //   } catch (e) {
+  //     // Check if widget is still mounted before showing error
+  //     if (!mounted) return;
 
-      // Extract clean error message
-      String errorMessage = e.toString();
-      if (errorMessage.startsWith('Exception: ')) {
-        errorMessage = errorMessage.substring('Exception: '.length);
-      }
+  //     // Extract clean error message
+  //     String errorMessage = e.toString();
+  //     if (errorMessage.startsWith('Exception: ')) {
+  //       errorMessage = errorMessage.substring('Exception: '.length);
+  //     }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
-      );
-    }
-  }
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -13,7 +13,7 @@ void main() async {
   );
 
   // Initialize Google Sign-In
-  await GoogleSignInService.initialize();
+  //await GoogleSignInService.initialize();
 
   runApp(const MyApp());
 }
