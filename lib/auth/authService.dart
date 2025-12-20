@@ -125,6 +125,18 @@ class AuthService {
     return await _supabase.auth.resetPasswordForEmail(email);
   }
 
+  // Verify OTP for password recovery
+  Future<AuthResponse> verifyOTP({
+    required String email,
+    required String token,
+  }) async {
+    return await _supabase.auth.verifyOTP(
+      email: email,
+      token: token,
+      type: OtpType.recovery,
+    );
+  }
+
   // Update password
   Future<void> updatePassword(String password) async {
     await _supabase.auth.updateUser(UserAttributes(password: password));

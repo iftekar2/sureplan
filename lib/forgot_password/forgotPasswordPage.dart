@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sureplan/auth/authService.dart';
 import 'package:sureplan/login/loginPage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -11,6 +12,8 @@ class ForgotPasswordPage extends StatefulWidget {
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final authService = AuthService();
+  bool _isResetMode = false; // Toggle between "Send Link" and "Reset Password"
+  bool _passwordVisible = false;
 
   final emailRegex = RegExp(
     r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
@@ -27,25 +30,71 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   final _emailController = TextEditingController();
+  final _tokenController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  // Forgot password button pressed
-  void forgotPassword() async {
+  // Forgot password (Send Link) button pressed
+  void sendResetLink() async {
+    if (!_formKey.currentState!.validate()) return;
+
     final email = _emailController.text.trim();
 
     try {
       await authService.resetPassword(email);
 
-      // Check if widget is still mounted before navigation
       if (!mounted) return;
 
-      // Show success message with instructions
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Password reset link sent! Check your email and click the link to reset your password.',
-          ),
+          content: Text('Password reset link sent! Check your email.'),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 4),
+        ),
+      );
+
+      // Optionally auto-switch to reset mode if they want to enter token manually
+      setState(() {
+        _isResetMode = true;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      _showError(e);
+    }
+  }
+
+  // Verify Token and Reset Password
+  void verifyAndResetPassword() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final email = _emailController.text.trim();
+    final token = _tokenController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Basic validation
+    if (token.isEmpty || token.length < 6) {
+      _showError("Invalid token format.");
+      return;
+    }
+    if (password.isEmpty || password.length < 6) {
+      _showError("Password must be at least 6 characters.");
+      return;
+    }
+
+    try {
+      // 1. Verify OTP
+      await authService.verifyOTP(email: email, token: token);
+
+      // 2. Update Password
+      await authService.updatePassword(password);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Password successfully updated! Please login.'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 3),
         ),
       );
 
@@ -55,19 +104,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } catch (e) {
-      // Check if widget is still mounted before showing error
       if (!mounted) return;
-
-      // Extract clean error message
-      String errorMessage = e.toString();
-      if (errorMessage.startsWith('Exception: ')) {
-        errorMessage = errorMessage.substring('Exception: '.length);
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
-      );
+      _showError(e);
     }
+  }
+
+  void _showError(dynamic e) {
+    String errorMessage = e.toString();
+    if (errorMessage.startsWith('Exception: ')) {
+      errorMessage = errorMessage.substring('Exception: '.length);
+    }
+    // Clean Supabase errors
+    if (errorMessage.contains("Token has expired") ||
+        errorMessage.contains("Invalid token")) {
+      errorMessage = "Invalid or expired token.";
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+    );
   }
 
   @override
@@ -86,98 +141,177 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
         ),
       ),
-
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Forgot Password?",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
-              ),
-            ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _isResetMode ? "Reset Password" : "Forgot Password?",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  _isResetMode
+                      ? "Enter the code sent to your email and your new password."
+                      : "Don't worry it happens. Please enter the email associated with your account.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                SizedBox(height: 40),
 
-            SizedBox(height: 5),
+                // Email Field (Always visible)
+                Text(
+                  "Email address",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                ),
+                SizedBox(height: 5),
+                TextFormField(
+                  controller: _emailController,
+                  validator: validateEmail,
+                  decoration: _inputDecoration("Enter your email address"),
+                  style: TextStyle(fontSize: 18),
+                ),
 
-            Text(
-              "Don't worry it happens. Please enter the email associated with your account.",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-            ),
+                // Extra fields for Reset Mode
+                if (_isResetMode) ...[
+                  SizedBox(height: 20),
+                  Text(
+                    "Reset Token",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                  ),
+                  SizedBox(height: 5),
+                  TextFormField(
+                    controller: _tokenController,
+                    decoration: _inputDecoration("Enter 6-digit token"),
+                    style: TextStyle(fontSize: 18),
+                    validator: (val) =>
+                        val != null && val.isEmpty ? "Token required" : null,
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    "New Password",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                  ),
+                  SizedBox(height: 5),
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: !_passwordVisible,
+                    decoration: _inputDecoration("Enter new password").copyWith(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        },
+                      ),
+                    ),
+                    style: TextStyle(fontSize: 18),
+                    validator: (val) => val != null && val.length < 6
+                        ? "Min 6 characters"
+                        : null,
+                  ),
+                ],
 
-            SizedBox(height: 40),
+                SizedBox(height: 30),
 
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Email address",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
-              ),
-            ),
-
-            SizedBox(height: 2),
-
-            TextFormField(
-              controller: _emailController,
-              validator: validateEmail,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(
-                    color: const Color.fromARGB(255, 169, 169, 169),
-                    width: 2.0,
+                // Main Action Button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    minimumSize: Size(double.infinity, 60),
+                  ),
+                  onPressed: _isResetMode
+                      ? verifyAndResetPassword
+                      : sendResetLink,
+                  child: Text(
+                    _isResetMode ? "Update Password" : "Send Reset Link",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
 
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(
-                    color: const Color.fromARGB(255, 169, 169, 169),
-                    width: 2.0,
+                SizedBox(height: 20),
+
+                // Toggle Mode Button
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _isResetMode = !_isResetMode;
+                        _tokenController.clear();
+                        _passwordController.clear();
+                      });
+                    },
+                    child: Text(
+                      _isResetMode
+                          ? "I need a token"
+                          : "I already have a token",
+                      style: TextStyle(
+                        fontSize: 19,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ),
-
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(
-                    color: const Color.fromARGB(255, 169, 169, 169),
-                    width: 2.0,
-                  ),
-                ),
-
-                hintText: "Enter your email address",
-                hintStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              style: TextStyle(fontSize: 18),
+              ],
             ),
-
-            SizedBox(height: 30),
-
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                minimumSize: Size(double.infinity, 60),
-              ),
-              onPressed: () {
-                forgotPassword();
-              },
-              child: Text(
-                "Send Reset Link",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: BorderSide(
+          color: const Color.fromARGB(255, 169, 169, 169),
+          width: 2.0,
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: BorderSide(
+          color: const Color.fromARGB(255, 169, 169, 169),
+          width: 2.0,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: BorderSide(
+          color: const Color.fromARGB(255, 169, 169, 169),
+          width: 2.0,
+        ),
+      ),
+      hintText: hint,
+      hintStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+        color: Colors.grey,
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
     );
   }
 }
