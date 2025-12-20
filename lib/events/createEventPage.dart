@@ -303,6 +303,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
+
                 onPressed: _isLoading ? null : _createEvent,
                 child: _isLoading
                     ? CircularProgressIndicator(color: Colors.white)

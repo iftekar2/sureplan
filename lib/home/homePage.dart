@@ -107,6 +107,7 @@ class _HomePageState extends State<HomePage> {
 
           final events = snapshot.data ?? [];
 
+          // If there are no events
           if (events.isEmpty) {
             return Center(
               child: Padding(
@@ -121,6 +122,7 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
                     Text(
                       "Started with SurePlan",
                       style: TextStyle(
@@ -128,6 +130,7 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
                     SizedBox(height: 10),
                     Text(
                       "Let's make sure everyone is on the same page",
@@ -137,6 +140,7 @@ class _HomePageState extends State<HomePage> {
                         color: const Color.fromARGB(255, 124, 124, 124),
                       ),
                     ),
+
                     SizedBox(height: 20),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -174,6 +178,7 @@ class _HomePageState extends State<HomePage> {
             onRefresh: () async {
               _refreshEvents();
             },
+
             child: ListView.builder(
               padding: EdgeInsets.all(20),
               itemCount: events.length + 1,
@@ -191,6 +196,7 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+
                         IconButton(
                           icon: Icon(
                             Icons.add_circle,
@@ -214,6 +220,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
 
+                // Display events
                 final event = events[index - 1];
                 return GestureDetector(
                   onTap: () => _navigateToEventPage(event),

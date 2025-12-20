@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/home/homePage.dart';
 import 'package:sureplan/home/invitationsPage.dart';
 import 'package:sureplan/new_idea/IdeaPage.dart';
+import 'package:sureplan/notification/notificationService.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
@@ -19,6 +21,46 @@ class _MainScaffoldState extends State<MainScaffold> {
     InvitationsPage(key: _pageKeys[1]),
     IdeaPage(key: _pageKeys[2]),
   ];
+
+  RealtimeChannel? _inviteChannel;
+
+  @override
+  void initState() {
+    super.initState();
+    _setupInviteListener();
+  }
+
+  @override
+  void dispose() {
+    _inviteChannel?.unsubscribe();
+    super.dispose();
+  }
+
+  void _setupInviteListener() {
+    final currentUserId = Supabase.instance.client.auth.currentUser?.id;
+    if (currentUserId == null) return;
+
+    _inviteChannel = Supabase.instance.client
+        .channel('public:event_invites')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'event_invites',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'invitee_id',
+            value: currentUserId,
+          ),
+          callback: (payload) {
+            Notificationservice().showNotification(
+              id: payload.newRecord['id'].toString(),
+              title: 'New Event Invitation',
+              body: 'You have been invited to a new event!',
+            );
+          },
+        )
+        .subscribe();
+  }
 
   void _onItemTapped(int index) {
     if (index == _selectedIndex) {

@@ -49,7 +49,6 @@ class _InvitationsPageState extends State<InvitationsPage> {
   Future<void> _respond(String inviteId, String status) async {
     try {
       await _inviteService.respondToInvite(inviteId: inviteId, status: status);
-      // Remove from list immediately for better UX
       setState(() {
         _invites.removeWhere((i) => i.id == inviteId);
       });
@@ -204,8 +203,8 @@ class _InvitationsPageState extends State<InvitationsPage> {
                           ],
                         ),
 
+                        // Action buttons
                         SizedBox(height: 15),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/auth/authGate.dart';
+import 'package:sureplan/notification/notificationService.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // initialize notification
+  await Notificationservice().initialize();
 
   await Supabase.initialize(
     url: "https://rqjmnuccshboadqrgveb.supabase.co",
