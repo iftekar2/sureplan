@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sureplan/auth/authService.dart';
 import 'package:sureplan/login/loginPage.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -12,7 +11,7 @@ class ForgotPasswordPage extends StatefulWidget {
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final authService = AuthService();
-  bool _isResetMode = false; // Toggle between "Send Link" and "Reset Password"
+  bool _isResetMode = false;
   bool _passwordVisible = false;
 
   final emailRegex = RegExp(
@@ -33,35 +32,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _tokenController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  // Forgot password (Send Link) button pressed
-  void sendResetLink() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    final email = _emailController.text.trim();
-
-    try {
-      await authService.resetPassword(email);
-
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Password reset link sent! Check your email.'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 4),
-        ),
-      );
-
-      // Optionally auto-switch to reset mode if they want to enter token manually
-      setState(() {
-        _isResetMode = true;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      _showError(e);
-    }
-  }
 
   // Verify Token and Reset Password
   void verifyAndResetPassword() async {
@@ -225,30 +195,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         : null,
                   ),
                 ],
-
-                SizedBox(height: 30),
-
-                // Main Action Button
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    minimumSize: Size(double.infinity, 60),
-                  ),
-                  onPressed: _isResetMode
-                      ? verifyAndResetPassword
-                      : sendResetLink,
-                  child: Text(
-                    _isResetMode ? "Update Password" : "Send Reset Link",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
 
                 SizedBox(height: 20),
 

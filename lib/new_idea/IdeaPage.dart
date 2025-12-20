@@ -180,9 +180,11 @@ class _IdeaPageState extends State<IdeaPage> {
 
                         return Card(
                           margin: EdgeInsets.only(bottom: 15),
-                          elevation: 2,
+                          elevation: 0,
+                          color: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(color: Colors.grey[400]!),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -197,7 +199,7 @@ class _IdeaPageState extends State<IdeaPage> {
                                         feature['title'] ?? '',
                                         style: TextStyle(
                                           fontSize: 18,
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                       if (feature['description'] != null &&
@@ -208,6 +210,7 @@ class _IdeaPageState extends State<IdeaPage> {
                                           feature['description'],
                                           style: TextStyle(
                                             color: Colors.grey[700],
+                                            fontSize: 16,
                                           ),
                                         ),
                                       ],
@@ -217,27 +220,38 @@ class _IdeaPageState extends State<IdeaPage> {
                                 SizedBox(width: 12),
                                 Column(
                                   children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        isUpvoted
-                                            ? Icons.arrow_upward_rounded
-                                            : Icons.arrow_upward_outlined,
-                                        color: isUpvoted
-                                            ? Colors.blue
-                                            : Colors.grey,
-                                        size: 30,
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(
+                                          100,
+                                        ),
+                                        border: Border.all(color: Colors.grey),
                                       ),
-                                      onPressed: () => _handleUpvote(
-                                        feature['id'],
-                                        feature['upvotes_count'] ?? 0,
-                                        votes,
+
+                                      child: IconButton(
+                                        icon: Icon(
+                                          isUpvoted
+                                              ? Icons.arrow_upward_rounded
+                                              : Icons.arrow_upward_outlined,
+                                          color: isUpvoted
+                                              ? Colors.blue
+                                              : Colors.black,
+                                          size: 30,
+                                        ),
+                                        onPressed: () => _handleUpvote(
+                                          feature['id'],
+                                          feature['upvotes_count'] ?? 0,
+                                          votes,
+                                        ),
                                       ),
                                     ),
+
                                     Text(
                                       '${feature['upvotes_count'] ?? 0}',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 16,
+                                        fontSize: 20,
                                         color: isUpvoted
                                             ? Colors.blue
                                             : Colors.black,
@@ -249,8 +263,8 @@ class _IdeaPageState extends State<IdeaPage> {
                                       IconButton(
                                         icon: Icon(
                                           Icons.delete,
-                                          color: Colors.red,
-                                          size: 30,
+                                          color: Colors.black,
+                                          size: 33,
                                         ),
                                         onPressed: () =>
                                             _handleDelete(feature['id']),
