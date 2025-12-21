@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/auth/authGate.dart';
 import 'package:sureplan/notification/notificationService.dart';
@@ -9,10 +10,12 @@ void main() async {
   // initialize notification
   await Notificationservice().initialize();
 
+  // initialize dotenv
+  await dotenv.load(fileName: ".env");
+
   await Supabase.initialize(
-    url: "https://rqjmnuccshboadqrgveb.supabase.co",
-    anonKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxam1udWNjc2hib2FkcXJndmViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNDgzMTAsImV4cCI6MjA4MDYyNDMxMH0.AyJjG4GF_xzafhTI53hnjVh55Ap8qCUjsnxB2_ub6XQ",
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
   // Initialize Google Sign-In

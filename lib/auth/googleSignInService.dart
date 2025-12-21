@@ -1,14 +1,12 @@
-// import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
 
 // class GoogleSignInService {
 //   /// Web Client ID that you registered with Google Cloud.
-//   static const webClientId =
-//       '578638753254-t1s5rnssdrmv4b7rg8bo23c3d6hcerl5.apps.googleusercontent.com';
+//   static String get webClientId => dotenv.env['SUPABASE_WEB_CLIENT_ID'] ?? '';
 
-//   /// iOS Client ID that you registered with Google Cloud.
-//   static const iosClientId =
-//       '578638753254-e7a5p8oi67hn6ul5gsiipng7o8drgd52.apps.googleusercontent.com';
+//   // /// iOS Client ID that you registered with Google Cloud.
+//   static String get iosClientId => dotenv.env['SUPABASE_IOS_CLIENT_ID'] ?? '';
 
 //   static bool _isInitialized = false;
 
