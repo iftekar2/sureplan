@@ -13,7 +13,7 @@ class Notificationservice {
 
     // prepare android initialization settings
     const initializationSettingsAndroid = AndroidInitializationSettings(
-      '@mipmap/launcher_icon',
+      '@mipmap/ic_launcher',
     );
 
     // prepare ios initialization settings
@@ -31,6 +31,17 @@ class Notificationservice {
 
     // initialize the plugin
     await notificationPlugin.initialize(initializationSettings);
+
+    // Request Android 13+ permissions
+    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+        notificationPlugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+
+    if (androidImplementation != null) {
+      await androidImplementation.requestNotificationsPermission();
+    }
 
     _initialized = true;
   }
