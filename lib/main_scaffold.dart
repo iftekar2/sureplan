@@ -59,6 +59,24 @@ class _MainScaffoldState extends State<MainScaffold> {
             );
           },
         )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'event_invites',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'invitee_id',
+            value: currentUserId,
+          ),
+          callback: (payload) {
+            // When user responds to an invite, refresh the HomePage
+            print('DEBUG: Invite status updated: ${payload.newRecord}');
+            setState(() {
+              _pageKeys[0] = UniqueKey();
+              _pages[0] = HomePage(key: _pageKeys[0]);
+            });
+          },
+        )
         .subscribe();
   }
 

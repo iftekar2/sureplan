@@ -21,10 +21,19 @@ class Event {
 
   // Create Event from JSON (from Supabase)
   factory Event.fromJson(Map<String, dynamic> json) {
+    final dateTimeStr = json['date_time'] as String;
+    final parsedDateTime = DateTime.parse(dateTimeStr);
+
+    print('DEBUG: Parsing event from DB - date_time string: $dateTimeStr');
+    print(
+      'DEBUG: Parsed as DateTime: $parsedDateTime (isUtc: ${parsedDateTime.isUtc})',
+    );
+    print('DEBUG: Converted to local: ${parsedDateTime.toLocal()}');
+
     return Event(
       id: json['id'] as String,
       title: json['title'] as String,
-      dateTime: DateTime.parse(json['date_time'] as String),
+      dateTime: parsedDateTime.toLocal(), // Convert UTC to local time
       location: json['location'] as String,
       createdBy: json['created_by'] as String,
       description: json['description'] as String,

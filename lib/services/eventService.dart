@@ -18,11 +18,14 @@ class EventService {
 
     final eventData = {
       'title': title,
-      'date_time': dateTime.toIso8601String(),
+      'date_time': dateTime.toUtc().toIso8601String(),
       'location': location,
       'description': description,
       'created_by': userId,
     };
+
+    print('DEBUG: Creating event with local time: $dateTime');
+    print('DEBUG: Storing as UTC: ${dateTime.toUtc()}');
 
     final response = await _supabase
         .from('events')
@@ -123,22 +126,47 @@ class EventService {
         .map((json) => Event.fromJson(json as Map<String, dynamic>))
         .toList();
 
-    // 2. Fetch events where current user is invited and "going"
+    print('DEBUG: Created events count: ${createdEvents.length}');
+
+    // 2. Fetch events where current user is invited and responded
     final invitedResponse = await _supabase
         .from('event_invites')
-        .select('events(*)')
+        .select('*, events(*)')
         .eq('invitee_id', userId)
         .neq(
           'status',
           'pending',
         ); // Show all responded events (going, maybe, not_going)
 
+    print('DEBUG: Raw invited response: ${invitedResponse.length} records');
+    print('DEBUG: Invited response data: $invitedResponse');
+
+    final nowDateTime = DateTime.now();
+    print('DEBUG: Current time: $nowDateTime (${nowDateTime.toUtc()} UTC)');
+
     final invitedEvents = (invitedResponse as List)
         .map((json) => json['events'])
-        .where((eventJson) => eventJson != null)
-        .map((eventJson) => Event.fromJson(eventJson as Map<String, dynamic>))
-        .where((event) => event.dateTime.isAfter(DateTime.now()))
+        .where((eventJson) {
+          if (eventJson == null) {
+            print('DEBUG: Skipping null event');
+            return false;
+          }
+          return true;
+        })
+        .map((eventJson) {
+          final event = Event.fromJson(eventJson as Map<String, dynamic>);
+          print(
+            'DEBUG: Event "${event.title}" - date_time: ${event.dateTime} (${event.dateTime.toUtc()} UTC)',
+          );
+          print('DEBUG: Is after now? ${event.dateTime.isAfter(nowDateTime)}');
+          return event;
+        })
+        .where((event) => event.dateTime.isAfter(nowDateTime))
         .toList();
+
+    print(
+      'DEBUG: Invited events count (after filtering): ${invitedEvents.length}',
+    );
 
     // 3. Merge and sort
     final allEvents = [...createdEvents, ...invitedEvents];
@@ -148,6 +176,8 @@ class EventService {
 
     // Sort by date
     uniqueEvents.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+
+    print('DEBUG: Final unique events count: ${uniqueEvents.length}');
 
     return uniqueEvents;
   }
