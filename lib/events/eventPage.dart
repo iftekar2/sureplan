@@ -77,6 +77,7 @@ class _EventPageState extends State<EventPage> {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
         title: Text('Delete Event'),
         content: Text('Are you sure you want to delete this event?'),
         actions: [
@@ -87,7 +88,7 @@ class _EventPageState extends State<EventPage> {
 
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('Delete'),
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -122,6 +123,90 @@ class _EventPageState extends State<EventPage> {
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  /// Allow individual user's to remove event from their view
+  Future<void> _deleteEventForSelf() async {
+    try {
+      final currentUserId = _auth.user?.id;
+      if (currentUserId == null) {
+        throw Exception('You must be logged in');
+      }
+
+      // Find the user's invite
+      final myInvite = _attendees
+          .where((a) => a.inviteeId == currentUserId)
+          .firstOrNull;
+
+      if (myInvite == null) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('You are not invited to this event'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      print(
+        'DEBUG: Attempting to delete invite ${myInvite.id} for user $currentUserId',
+      );
+
+      // Delete the invite record
+      await _inviteService.deleteInviteForSelf(myInvite.id);
+
+      print('DEBUG: Successfully deleted invite');
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Event removed from your list'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // Navigate back and trigger refresh
+      Navigator.pop(context, true);
+    } catch (e) {
+      print('ERROR: Failed to delete invite: $e');
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to remove event: ${e.toString()}'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+  Future<void> _confirmRemoveForSelf() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text('Remove Event'),
+        content: Text('Remove this event from your list?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Remove', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true) {
+      await _deleteEventForSelf();
     }
   }
 
@@ -184,23 +269,11 @@ class _EventPageState extends State<EventPage> {
                           Text(
                             _event.location,
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey[600],
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[700],
                             ),
                           ),
-                          if (_event.description != null &&
-                              _event.description!.isNotEmpty) ...[
-                            SizedBox(height: 10),
-                            Text(
-                              _event.description!,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ],
 
                           SizedBox(height: 10),
                           Text(
@@ -209,10 +282,24 @@ class _EventPageState extends State<EventPage> {
                             ).format(_event.dateTime),
                             style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
                               color: Colors.grey[600],
                             ),
                           ),
+
+                          if (_event.description != null &&
+                              _event.description!.isNotEmpty) ...[
+                            SizedBox(height: 10),
+                            Text(
+                              textAlign: TextAlign.center,
+                              _event.description!,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
 
                           if (_attendees.isNotEmpty) ...[
                             SizedBox(height: 20),
@@ -592,7 +679,9 @@ class _EventPageState extends State<EventPage> {
                     ),
                   ],
 
+                  // Show different buttons for event creator vs invitees
                   if (_event.createdBy == _auth.user?.id) ...[
+                    // Event creator buttons
                     SizedBox(height: 10),
                     TextButton(
                       style: TextButton.styleFrom(
@@ -665,6 +754,36 @@ class _EventPageState extends State<EventPage> {
                           ),
                         ),
                       ],
+                    ),
+                  ] else if (_attendees.any(
+                    (a) => a.inviteeId == _auth.user?.id,
+                  )) ...[
+                    // Invitee button - only show if user is invited
+                    SizedBox(height: 20),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.red,
+                        elevation: 0,
+                        side: BorderSide(color: Colors.red),
+                        minimumSize: Size(250, 55),
+                      ),
+                      onPressed: _confirmRemoveForSelf,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.remove_circle_outline, size: 30),
+                          SizedBox(width: 10),
+                          Text(
+                            'Remove from My Events',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ],

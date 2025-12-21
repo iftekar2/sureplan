@@ -99,4 +99,33 @@ class InviteService {
 
     return count;
   }
+
+  /// Delete invite for current user (removes event from their view)
+  Future<void> deleteInviteForSelf(String inviteId) async {
+    final currentUserId = _supabase.auth.currentUser?.id;
+    if (currentUserId == null) {
+      throw Exception('User must be logged in');
+    }
+
+    // Verify the invite belongs to the current user before deleting
+    final invite = await _supabase
+        .from('event_invites')
+        .select()
+        .eq('id', inviteId)
+        .eq('invitee_id', currentUserId)
+        .maybeSingle();
+
+    if (invite == null) {
+      throw Exception(
+        'Invite not found or you do not have permission to delete it',
+      );
+    }
+
+    // Perform the delete
+    await _supabase
+        .from('event_invites')
+        .delete()
+        .eq('id', inviteId)
+        .eq('invitee_id', currentUserId);
+  }
 }
