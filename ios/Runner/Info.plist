@@ -60,5 +60,9 @@
 		</dict>
 	</array>
 	<!-- End of the Google Sign-in Section -->
+
+	<!-- Export Compliance -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
