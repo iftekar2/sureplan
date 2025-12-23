@@ -1,9 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:sureplan/auth/authGate.dart';
 import 'package:sureplan/login/loginPage.dart';
 import 'package:sureplan/signup/signupPage.dart';
-import 'package:sureplan/auth/googleSignInService.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -12,223 +10,207 @@ class WelcomePage extends StatefulWidget {
   State<WelcomePage> createState() => _WelcomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage> {
-  final supabase = Supabase.instance.client;
+class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
+  /// Rotating images
+  int _currentPage = 1000;
+  late PageController _pageController;
+  Timer? _timer;
 
-  // Google Sign In pressed
-  // void signupWithGoogle() async {
-  //   try {
-  //     await GoogleSignInService.signInWithGoogle(supabase);
+  final List<String> _images = [
+    "lib/welcome/image_one.png",
+    "lib/welcome/image_two.png",
+    "lib/welcome/image_three.png",
+    "lib/welcome/image_four.png",
+  ];
 
-  //     // Check if widget is still mounted before navigation
-  //     if (!mounted) return;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _pageController = PageController(viewportFraction: 0.7, initialPage: 1000);
+    _startTimer();
+  }
 
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const AuthGate()),
-  //     );
-  //   } catch (e) {
-  //     // Check if widget is still mounted before showing error
-  //     if (!mounted) return;
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
 
-  //     // Extract clean error message
-  //     String errorMessage = e.toString();
-  //     if (errorMessage.startsWith('Exception: ')) {
-  //       errorMessage = errorMessage.substring('Exception: '.length);
-  //     }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _timer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      _startTimer();
+    }
+  }
 
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
-  //     );
-  //   }
-  // }
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (mounted && (ModalRoute.of(context)?.isCurrent ?? false)) {
+        _rotateImage();
+      }
+    });
+  }
+
+  void _rotateImage() {
+    if (!mounted || !_pageController.hasClients) return;
+
+    setState(() {
+      _currentPage = _pageController.page!.round() + 1;
+    });
+
+    _pageController.animateToPage(
+      _currentPage,
+      duration: const Duration(milliseconds: 1600),
+      curve: Curves.easeOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(
-              "https://images.unsplash.com/photo-1485178075098-49f78b4b43b4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGV2ZW50JTIwd2FsbHBhcGVyfGVufDB8fDB8fHww",
-            ),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5),
-              BlendMode.darken,
-            ),
-          ),
-        ),
+      backgroundColor: Colors.white,
 
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Spacer(flex: 2),
-              Column(
-                children: [
-                  Text(
-                    "Plan Smart, Not Hard",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-
-                  SizedBox(height: 20),
-
-                  SizedBox(
-                    height: 100,
-                    width: 350,
-                    child: Center(
-                      child: Text(
-                        "Confirm the perfect timing, easily check attendance, and never waste a hang-out again.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 24, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              Expanded(child: Container()),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 40),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20, bottom: 20),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SignupPage(),
-                                  ),
-                                );
-                              },
-
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                                minimumSize: Size(300, 60),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: Text(
-                                "Create an Account",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(height: 20),
-
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LoginPage(),
-                                  ),
-                                );
-                              },
-
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                elevation: 0,
-                                minimumSize: Size(300, 60),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  side: BorderSide(color: Colors.grey[400]!),
-                                ),
-                              ),
-                              child: Text(
-                                "I already have an account",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-
-                            // SizedBox(height: 10),
-                            // Divider(thickness: 0.3, color: Colors.black),
-                            // SizedBox(height: 10),
-
-                            // Text(
-                            //   "Sign up with",
-                            //   style: TextStyle(
-                            //     fontSize: 18,
-                            //     color: const Color.fromARGB(255, 99, 99, 99),
-                            //   ),
-                            // ),
-
-                            // SizedBox(height: 20),
-
-                            // ElevatedButton(
-                            //   onPressed: signupWithGoogle,
-                            //   style: ElevatedButton.styleFrom(
-                            //     backgroundColor: Colors.transparent,
-                            //     elevation: 0,
-                            //     padding: EdgeInsets.zero,
-                            //     minimumSize: Size.zero,
-                            //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            //     shadowColor: Colors.transparent,
-                            //     surfaceTintColor: Colors.transparent,
-                            //   ),
-                            //   child: SizedBox(
-                            //     height: 60,
-                            //     width: 60,
-                            //     child: Container(
-                            //       decoration: BoxDecoration(
-                            //         borderRadius: BorderRadius.circular(100),
-                            //         color: Colors.white,
-                            //         border: Border.all(
-                            //           color: const Color.fromARGB(
-                            //             255,
-                            //             196,
-                            //             196,
-                            //             196,
-                            //           ),
-                            //         ),
-                            //       ),
-                            //       alignment: Alignment.center,
-                            //       child: Image.asset(
-                            //         "lib/welcome/google-logo.png",
-                            //         height: 40,
-                            //         width: 40,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                          ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 500,
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) => setState(() => _currentPage = index),
+                itemBuilder: (context, index) {
+                  final imageIndex = index % _images.length;
+                  return Center(
+                    child: Container(
+                      height: 450,
+                      width: 300,
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: AssetImage(_images[imageIndex]),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.only(bottom: 50.0, left: 20, right: 20),
+              child: Column(
+                children: [
+                  Text(
+                    "Welcome to",
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  Text(
+                    "Sureplan",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 42,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  Text(
+                    "Bring people together with beautiful event invitations. Built for everyone to send, receive, and enjoy.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
+                  ),
+
+                  SizedBox(height: 30),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 60,
+                        width: 170,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.black),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginPage(),
+                              ),
+                            );
+                          },
+
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(width: 20),
+
+                      SizedBox(
+                        height: 60,
+                        width: 170,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.black),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignupPage(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Sign Up",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
