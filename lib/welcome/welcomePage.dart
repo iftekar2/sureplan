@@ -104,6 +104,8 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
               ),
             ),
 
+            SizedBox(height: 5),
+
             Padding(
               padding: const EdgeInsets.only(bottom: 50.0, left: 20, right: 20),
               child: Column(
@@ -126,7 +128,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                     ),
                   ),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
 
                   Text(
                     "Bring people together with beautiful event invitations. Built for everyone to send, receive, and enjoy.",
@@ -162,13 +164,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                             );
                           },
 
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: Text("Login", style: TextStyle(fontSize: 25)),
                         ),
                       ),
 
@@ -196,12 +192,10 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                               ),
                             );
                           },
+
                           child: Text(
                             "Sign Up",
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(fontSize: 25),
                           ),
                         ),
                       ),

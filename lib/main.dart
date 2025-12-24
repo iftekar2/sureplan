@@ -18,9 +18,6 @@ void main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
-  // Initialize Google Sign-In
-  //await GoogleSignInService.initialize();
-
   runApp(const MyApp());
 }
 
