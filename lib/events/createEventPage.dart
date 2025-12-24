@@ -24,6 +24,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
   DateTime _selectedDateTime = DateTime.now().add(Duration(hours: 1));
   List<UserProfile> _selectedInvitees = [];
   bool _isLoading = false;
+  bool _isTitleInvalid = false;
+  bool _isLocationInvalid = false;
 
   @override
   void dispose() {
@@ -65,7 +67,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
   }
 
   Future<void> _createEvent() async {
-    if (!_formKey.currentState!.validate()) return;
+    _validate();
+    if (!_formKey.currentState!.validate() ||
+        _isTitleInvalid ||
+        _isLocationInvalid) {
+      return;
+    }
 
     setState(() {
       _isLoading = true;
@@ -126,6 +133,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
     }
   }
 
+  void _validate() {
+    setState(() {
+      _isTitleInvalid = _titleController.text.trim().isEmpty;
+      _isLocationInvalid = _locationController.text.trim().isEmpty;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,24 +165,36 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 'Event Title',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
+
               SizedBox(height: 10),
               TextFormField(
                 controller: _titleController,
+                onChanged: (value) {
+                  if (_isTitleInvalid && value.trim().isNotEmpty) {
+                    setState(() => _isTitleInvalid = false);
+                  }
+                },
+
                 decoration: InputDecoration(
                   hintText: 'e.g., Birthday Party',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please enter an event title';
-                  }
-                  return null;
-                },
               ),
 
-              SizedBox(height: 25),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, left: 4.0),
+                child: Text(
+                  "Event title is required",
+                  style: TextStyle(
+                    color: _isTitleInvalid ? Colors.red : Colors.black,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
 
               // Date and Time
               Text(
@@ -200,7 +226,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 ),
               ),
 
-              SizedBox(height: 25),
+              SizedBox(height: 20),
 
               // Location field
               Text(
@@ -210,19 +236,29 @@ class _CreateEventPageState extends State<CreateEventPage> {
               SizedBox(height: 10),
               TextFormField(
                 controller: _locationController,
+                onChanged: (value) {
+                  if (_isLocationInvalid && value.trim().isNotEmpty) {
+                    setState(() => _isLocationInvalid = false);
+                  }
+                },
+
                 decoration: InputDecoration(
                   hintText: 'e.g., 123 Main St, New York, NY',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                //maxLines: 2,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please enter a location';
-                  }
-                  return null;
-                },
+              ),
+
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, left: 4.0),
+                child: Text(
+                  "Event location is required",
+                  style: TextStyle(
+                    color: _isLocationInvalid ? Colors.red : Colors.black,
+                    fontSize: 14,
+                  ),
+                ),
               ),
 
               SizedBox(height: 25),
