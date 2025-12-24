@@ -115,38 +115,47 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Get the party",
-                      style: TextStyle(
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Image.network(
+                      "https://img.icons8.com/?size=100&id=m9vqEcBYERYl&format=png&color=000000",
+                      height: 80,
+                      width: 80,
+                      color: Colors.black,
                     ),
 
                     Text(
-                      "Started with SurePlan",
+                      "No Upcoming Events",
                       style: TextStyle(
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
                       ),
+                      textAlign: TextAlign.center,
                     ),
 
                     SizedBox(height: 10),
+
                     Text(
-                      "Let's make sure everyone is on the same page",
+                      "Upcoming Events, whether you're a host or a guest, will appear here.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
                         color: const Color.fromARGB(255, 124, 124, 124),
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
 
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
+
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        minimumSize: Size(270, 70),
-                        backgroundColor: Colors.black,
+                        minimumSize: Size(250, 60),
+                        backgroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          side: BorderSide(color: Colors.grey[600]!),
+                        ),
                       ),
+
                       onPressed: () async {
                         final result = await Navigator.push(
                           context,
@@ -158,13 +167,10 @@ class _HomePageState extends State<HomePage> {
                           _refreshEvents();
                         }
                       },
+
                       child: Text(
                         "Create an Event",
-                        style: TextStyle(
-                          fontSize: 23,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(fontSize: 23, color: Colors.black),
                       ),
                     ),
                   ],
