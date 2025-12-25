@@ -1,9 +1,23 @@
+class EventCreator {
+  final String id;
+  final String username;
+
+  EventCreator({required this.id, required this.username});
+
+  factory EventCreator.fromJson(Map<String, dynamic> json, String id) {
+    return EventCreator(
+      id: id,
+      username: json['username'] as String? ?? 'Unknown',
+    );
+  }
+}
+
 class Event {
   final String id;
   final String title;
   final DateTime dateTime;
   final String location;
-  final String createdBy;
+  final EventCreator createdBy;
   final String? description;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -24,19 +38,19 @@ class Event {
     final dateTimeStr = json['date_time'] as String;
     final parsedDateTime = DateTime.parse(dateTimeStr);
 
-    print('DEBUG: Parsing event from DB - date_time string: $dateTimeStr');
-    print(
-      'DEBUG: Parsed as DateTime: $parsedDateTime (isUtc: ${parsedDateTime.isUtc})',
-    );
-    print('DEBUG: Converted to local: ${parsedDateTime.toLocal()}');
+    // Support both direct ID and joined user profile
+    final creatorId = json['created_by'] as String;
+    final creatorData = json['user_profiles'] as Map<String, dynamic>?;
 
     return Event(
       id: json['id'] as String,
       title: json['title'] as String,
       dateTime: parsedDateTime.toLocal(), // Convert UTC to local time
       location: json['location'] as String,
-      createdBy: json['created_by'] as String,
-      description: json['description'] as String,
+      createdBy: creatorData != null
+          ? EventCreator.fromJson(creatorData, creatorId)
+          : EventCreator(id: creatorId, username: 'Unknown'),
+      description: json['description'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -48,7 +62,7 @@ class Event {
       'title': title,
       'date_time': dateTime.toIso8601String(),
       'location': location,
-      'created_by': createdBy,
+      'created_by': createdBy.id,
       'description': description,
     };
   }
@@ -59,7 +73,7 @@ class Event {
     String? title,
     DateTime? dateTime,
     String? location,
-    String? createdBy,
+    EventCreator? createdBy,
     String? description,
     DateTime? createdAt,
     DateTime? updatedAt,

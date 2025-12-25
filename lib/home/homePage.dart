@@ -18,6 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final EventService _eventService = EventService();
   late Future<List<Event>> _eventsFuture;
+  final supabase = Supabase.instance.client;
 
   @override
   void initState() {
@@ -43,9 +44,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget build(BuildContext context) {
-    final supabase = Supabase.instance.client;
-    final currentUser = supabase.auth.currentUser;
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -245,59 +243,47 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
+                            event.createdBy.username,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+
+                          Text(
                             event.title,
                             style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
                             ),
+                            textAlign: TextAlign.center,
                           ),
 
                           SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.calendar_today,
-                                size: 30,
-                                color: Colors.grey,
-                              ),
 
-                              SizedBox(width: 10),
-                              Text(
-                                DateFormat(
-                                  'MMM d, y • h:mm a',
-                                ).format(event.dateTime),
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            DateFormat(
+                              'MMM d, y • h:mm a',
+                            ).format(event.dateTime),
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 18,
+                            ),
                           ),
 
                           SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Icon(
-                                  Icons.location_on,
-                                  size: 30,
-                                  color: Colors.grey,
-                                ),
-                              ),
 
-                              SizedBox(width: 10),
-                              Text(
-                                event.location,
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 20,
-                                ),
+                          SizedBox(
+                            width: 250,
+                            child: Text(
+                              event.location,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.grey[700],
+                                fontSize: 20,
                               ),
-                            ],
+                            ),
                           ),
                         ],
                       ),

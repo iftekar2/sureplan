@@ -30,7 +30,7 @@ class EventService {
     final response = await _supabase
         .from('events')
         .insert(eventData)
-        .select()
+        .select('*, user_profiles(username)')
         .single();
 
     return Event.fromJson(response);
@@ -40,7 +40,7 @@ class EventService {
   Future<List<Event>> getAllEvents() async {
     final response = await _supabase
         .from('events')
-        .select()
+        .select('*, user_profiles(username)')
         .order('date_time', ascending: true);
 
     return (response as List)
@@ -57,7 +57,7 @@ class EventService {
 
     final response = await _supabase
         .from('events')
-        .select()
+        .select('*, user_profiles(username)')
         .eq('created_by', userId)
         .order('date_time', ascending: true);
 
@@ -70,7 +70,7 @@ class EventService {
   Future<Event> getEventById(String eventId) async {
     final response = await _supabase
         .from('events')
-        .select()
+        .select('*, user_profiles(username)')
         .eq('id', eventId)
         .single();
 
@@ -96,7 +96,7 @@ class EventService {
         .from('events')
         .update(updateData)
         .eq('id', eventId)
-        .select()
+        .select('*, user_profiles(username)')
         .single();
 
     return Event.fromJson(response);
@@ -117,7 +117,7 @@ class EventService {
     // 1. Fetch events created by current user
     final createdResponse = await _supabase
         .from('events')
-        .select()
+        .select('*, user_profiles(username)')
         .eq('created_by', userId)
         .gte('date_time', now)
         .order('date_time', ascending: true);
@@ -131,7 +131,7 @@ class EventService {
     // 2. Fetch events where current user is invited and responded
     final invitedResponse = await _supabase
         .from('event_invites')
-        .select('*, events(*)')
+        .select('*, events(*, user_profiles(username))')
         .eq('invitee_id', userId)
         .neq(
           'status',
@@ -188,7 +188,7 @@ class EventService {
 
     final response = await _supabase
         .from('events')
-        .select()
+        .select('*, user_profiles(username)')
         .lt('date_time', now)
         .order('date_time', ascending: false);
 
