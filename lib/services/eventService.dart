@@ -133,10 +133,7 @@ class EventService {
         .from('event_invites')
         .select('*, events(*, user_profiles(username))')
         .eq('invitee_id', userId)
-        .neq(
-          'status',
-          'pending',
-        ); // Show all responded events (going, maybe, not_going)
+        .neq('status', 'pending');
 
     print('DEBUG: Raw invited response: ${invitedResponse.length} records');
     print('DEBUG: Invited response data: $invitedResponse');

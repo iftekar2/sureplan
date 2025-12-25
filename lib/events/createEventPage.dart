@@ -35,6 +35,15 @@ class _CreateEventPageState extends State<CreateEventPage> {
   void initState() {
     super.initState();
     _fetchHostUsername();
+    _titleController.addListener(_onTextChanged);
+    _locationController.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    setState(() {
+      // We don't need to do anything here except call setState
+      // to trigger a UI refresh so the button color updates.
+    });
   }
 
   Future<void> _fetchHostUsername() async {
@@ -69,8 +78,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _locationController.dispose();
+    _titleController.removeListener(_onTextChanged);
+    _locationController.removeListener(_onTextChanged);
     _descriptionController.dispose();
     _hostNameController.dispose();
     super.dispose();
@@ -216,6 +225,18 @@ class _CreateEventPageState extends State<CreateEventPage> {
     });
   }
 
+  double _calculateFontSize() {
+    int textLength = _titleController.text.length;
+
+    if (textLength <= 15) {
+      return 32.0;
+    } else if (textLength <= 30) {
+      return 26.0;
+    } else {
+      return 20.0;
+    }
+  }
+
   void _showEventDetails(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -342,10 +363,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
       margin: const EdgeInsets.only(right: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+        color: const Color.fromARGB(30, 0, 0, 0),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: Colors.white),
       ),
+
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -355,17 +377,18 @@ class _CreateEventPageState extends State<CreateEventPage> {
             child: Text(
               user.username[0].toUpperCase(),
               style: const TextStyle(
-                color: Colors.black87,
+                color: Colors.black,
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
+
           const SizedBox(width: 8),
           Text(
             user.username,
             style: const TextStyle(
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
@@ -375,15 +398,17 @@ class _CreateEventPageState extends State<CreateEventPage> {
     );
   }
 
-  Color get titleColor => _isTitleInvalid ? Colors.red : Colors.grey;
-  Color get locationColor => _isLocationInvalid ? Colors.red : Colors.grey;
+  bool get _isFormValid {
+    return _titleController.text.trim().isNotEmpty &&
+        _locationController.text.trim().isNotEmpty;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 30),
+          icon: Icon(Icons.arrow_back, size: 30, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -391,13 +416,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
         title: Text(
           'Create Event',
-          style: TextStyle(fontWeight: FontWeight.w600),
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
 
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 30, 30, 30),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
         child: Form(
@@ -410,7 +435,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(30, 0, 0, 0),
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.white24),
+                  border: Border.all(color: Colors.white),
                 ),
 
                 child: Column(
@@ -423,22 +448,22 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       keyboardType: TextInputType.multiline,
                       textInputAction: TextInputAction.newline,
 
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 32,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: _calculateFontSize(),
                         fontWeight: FontWeight.bold,
                       ),
 
                       decoration: InputDecoration(
                         hintText: 'Event Title',
-                        hintStyle: TextStyle(color: titleColor),
+                        hintStyle: TextStyle(color: Colors.white70),
                         border: InputBorder.none,
                         isDense: true,
                       ),
                     ),
 
                     const Divider(
-                      color: Color.fromARGB(57, 42, 42, 42),
+                      color: Color.fromARGB(57, 218, 218, 218),
                       height: 30,
                     ),
 
@@ -449,7 +474,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         children: [
                           Image.network(
                             "https://img.icons8.com/?size=100&id=mlr7FnQ3G7zb&format=png&color=000000",
-                            color: Color.fromARGB(255, 67, 67, 67),
+                            color: Colors.white,
                             height: 40,
                             width: 40,
                           ),
@@ -460,7 +485,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                               'E, MMMM d, h:mm a',
                             ).format(_selectedDateTime),
                             style: const TextStyle(
-                              color: Color.fromARGB(255, 67, 67, 67),
+                              color: Colors.white,
                               fontSize: 20,
                             ),
                           ),
@@ -469,7 +494,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     ),
 
                     const Divider(
-                      color: Color.fromARGB(57, 42, 42, 42),
+                      color: Color.fromARGB(57, 218, 218, 218),
                       height: 30,
                     ),
 
@@ -480,7 +505,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         children: [
                           Image.network(
                             "https://img.icons8.com/?size=100&id=43731&format=png&color=000000",
-                            color: Color.fromARGB(255, 67, 67, 67),
+                            color: Colors.white,
                             height: 30,
                             width: 30,
                           ),
@@ -495,14 +520,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
                             textInputAction: TextInputAction.newline,
 
                             // onChanged: (value)
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 67, 67, 67),
-                              fontSize: 20,
-                            ),
+                            style: TextStyle(color: Colors.white, fontSize: 20),
 
                             decoration: InputDecoration(
                               hintText: "Location",
-                              hintStyle: TextStyle(color: locationColor),
+                              hintStyle: TextStyle(color: Colors.white),
                               border: InputBorder.none,
                               isDense: true,
                             ),
@@ -521,7 +543,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(30, 0, 0, 0),
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.white24),
+                  border: Border.all(color: Colors.white),
                 ),
 
                 child: Column(
@@ -534,7 +556,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
                           text: TextSpan(
                             style: const TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontSize: 20,
                             ),
 
@@ -542,7 +564,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                               const TextSpan(
                                 text: "Hosted by ",
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontSize: 20,
                                 ),
                               ),
@@ -550,7 +572,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                               TextSpan(
                                 text: _hostUsername ?? '...',
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontSize: 20,
                                   height: 1.5,
                                 ),
@@ -570,7 +592,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                             ? "Add a description...."
                             : _descriptionController.text,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black, fontSize: 20),
+                        style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                     ),
                   ],
@@ -585,7 +607,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(30, 0, 0, 0),
                     borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: Colors.white24),
+                    border: Border.all(color: Colors.white),
                   ),
 
                   child: Column(
@@ -595,7 +617,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                       ),
 
@@ -613,153 +635,15 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 ),
               ],
 
-              // TextFormField(
-              //         controller: _titleController,
-              //         textAlign: TextAlign.center,
-              //         maxLines: null,
-              //         keyboardType: TextInputType.multiline,
-              //         textInputAction: TextInputAction.newline,
-
-              //         style: const TextStyle(
-              //           color: Colors.black,
-              //           fontSize: 32,
-              //           fontWeight: FontWeight.bold,
-              //         ),
-
-              //         decoration: const InputDecoration(
-              //           hintText: 'Event Title',
-              //           hintStyle: TextStyle(color: Colors.grey),
-              //           border: InputBorder.none,
-              //           isDense: true,
-              //         ),
-              //       ),
-
-              // Title field
-              // Text(
-              //   'Event Title',
-              //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              // ),
-
-              // SizedBox(height: 10),
-              // TextFormField(
-              //   controller: _titleController,
-              //   onChanged: (value) {
-              //     if (_isTitleInvalid && value.trim().isNotEmpty) {
-              //       setState(() => _isTitleInvalid = false);
-              //     }
-              //   },
-
-              //   decoration: InputDecoration(
-              //     hintText: 'e.g., Birthday Party',
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(15),
-              //     ),
-              //   ),
-              // ),
-
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 8.0, left: 4.0),
-              //   child: Text(
-              //     "Event title is required",
-              //     style: TextStyle(
-              //       color: _isTitleInvalid ? Colors.red : Colors.black,
-              //       fontSize: 14,
-              //     ),
-              //   ),
-              // ),
-
-              // SizedBox(height: 20),
-
-              // // Date and Time
-              // Text(
-              //   'Date & Time',
-              //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              // ),
-
-              // SizedBox(height: 10),
-              // InkWell(
-              //   onTap: _selectDateTime,
-              //   child: Container(
-              //     padding: EdgeInsets.all(16),
-              //     decoration: BoxDecoration(
-              //       border: Border.all(color: Colors.grey),
-              //       borderRadius: BorderRadius.circular(15),
-              //     ),
-              //     child: Row(
-              //       children: [
-              //         Icon(Icons.calendar_today, color: Colors.grey),
-              //         SizedBox(width: 15),
-              //         Text(
-              //           DateFormat(
-              //             'EEE, MMMM d, yyyy • h:mm a',
-              //           ).format(_selectedDateTime),
-              //           style: TextStyle(fontSize: 16),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-
-              // SizedBox(height: 20),
-
-              // // Location field
-              // Text(
-              //   'Location',
-              //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              // ),
-              // SizedBox(height: 10),
-              // TextFormField(
-              //   controller: _locationController,
-              //   onChanged: (value) {
-              //     if (_isLocationInvalid && value.trim().isNotEmpty) {
-              //       setState(() => _isLocationInvalid = false);
-              //     }
-              //   },
-
-              //   decoration: InputDecoration(
-              //     hintText: 'e.g., 123 Main St, New York, NY',
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(15),
-              //     ),
-              //   ),
-              // ),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 8.0, left: 4.0),
-              //   child: Text(
-              //     "Event location is required",
-              //     style: TextStyle(
-              //       color: _isLocationInvalid ? Colors.red : Colors.black,
-              //       fontSize: 14,
-              //     ),
-              //   ),
-              // ),
-              // SizedBox(height: 25),
-
-              // // Description field
-              // Text(
-              //   'Description',
-              //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              // ),
-              // SizedBox(height: 10),
-              // TextFormField(
-              //   controller: _descriptionController,
-              //   decoration: InputDecoration(
-              //     hintText: 'e.g., This is going to be a surprise party',
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(15),
-              //     ),
-              //   ),
-              //   maxLines: 5,
-              // ),
               SizedBox(height: 20),
 
               // Invite friends
               TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
+                  backgroundColor: Color.fromARGB(30, 0, 0, 0),
+                  foregroundColor: Colors.white,
                   elevation: 0,
-                  side: BorderSide(color: Colors.grey[400]!),
+                  side: BorderSide(color: Colors.white),
                   minimumSize: Size(250, 55),
                 ),
 
@@ -802,7 +686,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
               // Create button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
+                  backgroundColor: _isFormValid
+                      ? Color(0xFF0887ff)
+                      : Colors.grey,
+
                   minimumSize: Size(double.infinity, 60),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
