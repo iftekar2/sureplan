@@ -4,6 +4,7 @@ import 'package:sureplan/auth/authService.dart';
 import 'package:sureplan/auth/googleService.dart';
 import 'package:sureplan/login/loginPage.dart';
 import 'package:sureplan/main.dart';
+import 'package:sureplan/signup/confirmEmailPage.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -90,7 +91,7 @@ class _SignupPageState extends State<SignupPage> {
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const AuthGate()),
+        MaterialPageRoute(builder: (context) => ConfirmEmailPage(email: email)),
         (route) => false,
       );
     } catch (e) {
@@ -199,6 +200,7 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 2.0,
                                 ),
                               ),
+
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                                 borderSide: const BorderSide(
@@ -206,6 +208,7 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 2.0,
                                 ),
                               ),
+
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                                 borderSide: const BorderSide(
@@ -213,21 +216,26 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 2.0,
                                 ),
                               ),
+
                               label: const Text("Email"),
+
                               labelStyle: const TextStyle(
                                 fontSize: 20,
                                 color: Color.fromARGB(255, 119, 119, 119),
                                 fontWeight: FontWeight.w500,
                               ),
+
                               floatingLabelStyle: const TextStyle(
                                 fontSize: 25,
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
                               ),
+
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 16,
                                 horizontal: 12,
                               ),
+
                               errorStyle: const TextStyle(
                                 fontSize: 14,
                                 height: 1.5,
@@ -235,6 +243,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             style: const TextStyle(fontSize: 20),
                           ),
+
                           const SizedBox(height: 25),
                           TextFormField(
                             controller: _usernameController,

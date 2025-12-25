@@ -8,10 +8,17 @@ class AuthService {
     String email,
     String password,
   ) async {
-    return await _supabase.auth.signInWithPassword(
+    final response = await _supabase.auth.signInWithPassword(
       email: email,
       password: password,
     );
+
+    // Self-healing: Ensure profile exists
+    if (response.user != null) {
+      await _ensureProfileExists(response.user!);
+    }
+
+    return response;
   }
 
   // Check if username exists
@@ -59,7 +66,9 @@ class AuthService {
           'notification': true,
         });
       } catch (e) {
-        print('Warning: Failed to create user profile: $e');
+        // This may fail if email confirmation is required (RLS prevents insert without session)
+        // Profile will be created in verifySignupOTP after user is authenticated
+        print('Note: Initial profile creation skipped or failed: $e');
       }
     }
 
@@ -137,6 +146,59 @@ class AuthService {
     );
   }
 
+  // Verify OTP for signup
+  Future<AuthResponse> verifySignupOTP({
+    required String email,
+    required String token,
+  }) async {
+    final response = await _supabase.auth.verifyOTP(
+      email: email,
+      token: token,
+      type: OtpType.signup,
+    );
+
+    // After successful verification, the user is signed in.
+    // Ensure the user profile exists.
+    if (response.user != null) {
+      await _ensureProfileExists(response.user!);
+    }
+
+    return response;
+  }
+
+  // Ensure profile exists in database
+  Future<void> _ensureProfileExists(User user) async {
+    try {
+      final userId = user.id;
+      final displayName = user.userMetadata?['display_name'] as String?;
+      final email = user.email;
+
+      // Check if profile exists
+      final profile = await _supabase
+          .from('user_profiles')
+          .select()
+          .eq('id', userId)
+          .maybeSingle();
+
+      if (profile == null && displayName != null && email != null) {
+        await _supabase.from('user_profiles').insert({
+          'id': userId,
+          'username': displayName,
+          'email': email,
+          'notification': true,
+        });
+        print('Profile created for user: $userId');
+      }
+    } catch (e) {
+      print('Error ensuring user profile exists: $e');
+    }
+  }
+
+  // Resend OTP
+  Future<void> resendOTP({required String email}) async {
+    await _supabase.auth.resend(email: email, type: OtpType.signup);
+  }
+
   // Update password
   Future<void> updatePassword(String password) async {
     await _supabase.auth.updateUser(UserAttributes(password: password));
@@ -144,4 +206,27 @@ class AuthService {
 
   // Get current user
   User? get user => _supabase.auth.currentUser;
+
+  // Get current user profile with self-healing
+  Future<Map<String, dynamic>?> getCurrentUserProfile() async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) return null;
+
+    try {
+      // Ensure profile exists
+      await _ensureProfileExists(user);
+
+      // Fetch profile
+      final response = await _supabase
+          .from('user_profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+
+      return response;
+    } catch (e) {
+      print('Error fetching current user profile: $e');
+      return null;
+    }
+  }
 }

@@ -23,26 +23,22 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> getUserProfile() async {
-    final supabase = Supabase.instance.client;
-    final currentUser = supabase.auth.currentUser;
-    final userId = currentUser?.id ?? '';
-
     try {
-      final userProfile = await supabase
-          .from('user_profiles')
-          .select('username, email')
-          .eq('id', userId)
-          .single();
+      final userProfile = await authService.getCurrentUserProfile();
 
-      final username = userProfile['username'] as String? ?? 'N/A';
-      final email = userProfile['email'] as String? ?? 'N/A';
-
-      setState(() {
-        _username = username;
-        _email = email;
-      });
+      if (userProfile != null) {
+        setState(() {
+          _username = userProfile['username'] as String? ?? 'N/A';
+          _email = userProfile['email'] as String? ?? 'N/A';
+        });
+      } else {
+        setState(() {
+          _username = "Guest";
+          _email = "Not logged in";
+        });
+      }
     } catch (e) {
-      print("Error fetching user profile: $e");
+      print("Error fetching user profile in UI: $e");
       setState(() {
         _username = "Error";
         _email = "Error";
