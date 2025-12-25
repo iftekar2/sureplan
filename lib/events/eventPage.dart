@@ -446,7 +446,9 @@ class _EventPageState extends State<EventPage> {
                                         height: 100,
                                         decoration: BoxDecoration(
                                           color: myInvite?.status == 'going'
-                                              ? Colors.green.withOpacity(0.1)
+                                              ? Colors.green.withValues(
+                                                  alpha: 0.1,
+                                                )
                                               : null,
                                           border: Border.all(
                                             color: myInvite?.status == 'going'
@@ -506,7 +508,9 @@ class _EventPageState extends State<EventPage> {
                                         height: 100,
                                         decoration: BoxDecoration(
                                           color: myInvite?.status == 'not_going'
-                                              ? Colors.red.withOpacity(0.1)
+                                              ? Colors.red.withValues(
+                                                  alpha: 0.1,
+                                                )
                                               : null,
                                           border: Border.all(
                                             color:
@@ -565,7 +569,9 @@ class _EventPageState extends State<EventPage> {
                                         height: 100,
                                         decoration: BoxDecoration(
                                           color: myInvite?.status == 'maybe'
-                                              ? Colors.blue.withOpacity(0.1)
+                                              ? Colors.blue.withValues(
+                                                  alpha: 0.1,
+                                                )
                                               : null,
                                           border: Border.all(
                                             color: myInvite?.status == 'maybe'
