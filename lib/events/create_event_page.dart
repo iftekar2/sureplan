@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/events/select_invitees_page.dart';
@@ -30,6 +32,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   bool _isTitleInvalid = false;
   bool _isLocationInvalid = false;
   String? _hostUsername;
+  File? _imageFile;
 
   @override
   void initState() {
@@ -161,16 +164,20 @@ class _CreateEventPageState extends State<CreateEventPage> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
-
     try {
+      String? backgroundImageUrl;
+      if (_imageFile != null) {
+        backgroundImageUrl = await _eventService.uploadEventBackground(
+          _imageFile!,
+        );
+      }
+
       final createdEvent = await _eventService.createEvent(
         title: _titleController.text.trim(),
         dateTime: _selectedDateTime,
         location: _locationController.text.trim(),
         description: _descriptionController.text.trim(),
+        backgroundImageUrl: backgroundImageUrl,
       );
 
       // Send invites to selected users
@@ -360,6 +367,20 @@ class _CreateEventPageState extends State<CreateEventPage> {
     );
   }
 
+  Future _pickImage() async {
+    final imagePicker = ImagePicker();
+
+    // Pick an image
+    final XFile? image = await imagePicker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    // Update image preview
+    if (image != null) {
+      _imageFile = File(image.path);
+    }
+  }
+
   Widget _buildInviteeChip(UserProfile user) {
     return Container(
       margin: const EdgeInsets.only(right: 8),
@@ -434,9 +455,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
         height: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(
-              "https://images.unsplash.com/photo-1631983856436-02b31717416b?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            ),
+            image: _imageFile != null
+                ? FileImage(_imageFile!) as ImageProvider
+                : NetworkImage(
+                    "https://images.unsplash.com/photo-1631983856436-02b31717416b?q=80&w=987&auto=format&fit=crop",
+                  ),
             alignment: Alignment.topCenter,
             repeat: ImageRepeat.repeatY,
             fit: BoxFit.fitWidth,
@@ -470,12 +493,15 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           border: Border.all(color: Colors.white),
                         ),
 
-                        child: const Text(
-                          "Edit Background",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 20,
+                        child: GestureDetector(
+                          onTap: _pickImage,
+                          child: Text(
+                            "Edit Background",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                            ),
                           ),
                         ),
                       ),

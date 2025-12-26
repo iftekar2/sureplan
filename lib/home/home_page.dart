@@ -298,7 +298,8 @@ class _HomePageState extends State<HomePage> {
                                 // --- BACKGROUND IMAGE ---
                                 Positioned.fill(
                                   child: Image.network(
-                                    "https://images.unsplash.com/photo-1631983856436-02b31717416b?q=80&w=987&auto=format&fit=crop",
+                                    event.backgroundImage ??
+                                        "https://images.unsplash.com/photo-1631983856436-02b31717416b?q=80&w=987&auto=format&fit=crop",
                                     fit: BoxFit.cover,
                                   ),
                                 ),

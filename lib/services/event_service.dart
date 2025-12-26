@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/models/event.dart';
 
@@ -10,6 +11,7 @@ class EventService {
     required DateTime dateTime,
     required String location,
     String? description,
+    String? backgroundImageUrl,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
@@ -21,6 +23,7 @@ class EventService {
       'date_time': dateTime.toUtc().toIso8601String(),
       'location': location,
       'description': description,
+      'background_image': backgroundImageUrl,
       'created_by': userId,
     };
 
@@ -103,6 +106,7 @@ class EventService {
     DateTime? dateTime,
     String? location,
     String? description,
+    String? backgroundImageUrl,
   }) async {
     final updateData = <String, dynamic>{};
 
@@ -110,6 +114,9 @@ class EventService {
     if (dateTime != null) updateData['date_time'] = dateTime.toIso8601String();
     if (location != null) updateData['location'] = location;
     if (description != null) updateData['description'] = description;
+    if (backgroundImageUrl != null) {
+      updateData['background_image'] = backgroundImageUrl;
+    }
 
     final response = await _supabase
         .from('events')
@@ -223,5 +230,25 @@ class EventService {
     return (response as List)
         .map((json) => Event.fromJson(json as Map<String, dynamic>))
         .toList();
+  }
+
+  /// Upload event background image
+  Future<String> uploadEventBackground(File imageFile) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) throw Exception('User must be logged in');
+
+    final fileExt = imageFile.path.split('.').last;
+    final fileName = '${DateTime.now().millisecondsSinceEpoch}.$fileExt';
+    final filePath = '$userId/$fileName';
+
+    await _supabase.storage
+        .from('event-backgrounds')
+        .upload(filePath, imageFile);
+
+    final String publicUrl = _supabase.storage
+        .from('event-backgrounds')
+        .getPublicUrl(filePath);
+
+    return publicUrl;
   }
 }

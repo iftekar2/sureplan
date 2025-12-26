@@ -64,5 +64,10 @@
 	<!-- Export Compliance -->
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+
+	<!-- Image Picker -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to select an image for your event.</string>
+	
 </dict>
 </plist>

@@ -24,6 +24,7 @@ class Event {
   final String? status;
   final String? inviteeId;
   final String? inviteeStatus;
+  final String? backgroundImage;
 
   Event({
     required this.id,
@@ -37,6 +38,7 @@ class Event {
     required this.status,
     required this.inviteeId,
     required this.inviteeStatus,
+    this.backgroundImage,
   });
 
   // Create Event from JSON (from Supabase)
@@ -62,6 +64,7 @@ class Event {
       status: json['status'] as String?,
       inviteeId: json['invitee_id'] as String?,
       inviteeStatus: json['invitee_status'] as String?,
+      backgroundImage: json['background_image'] as String?,
     );
   }
 
@@ -76,6 +79,7 @@ class Event {
       'status': status,
       'invitee_id': inviteeId,
       'invitee_status': inviteeStatus,
+      'background_image': backgroundImage,
     };
   }
 
@@ -92,6 +96,7 @@ class Event {
     String? status,
     String? inviteeId,
     String? inviteeStatus,
+    String? backgroundImage,
   }) {
     return Event(
       id: id ?? this.id,
@@ -105,6 +110,7 @@ class Event {
       status: status ?? this.status,
       inviteeId: inviteeId ?? this.inviteeId,
       inviteeStatus: inviteeStatus ?? this.inviteeStatus,
+      backgroundImage: backgroundImage ?? this.backgroundImage,
     );
   }
 }
