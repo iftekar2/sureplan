@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'package:sureplan/events/select_invitees_page.dart';
 import 'package:sureplan/models/user_profile.dart';
 import 'package:sureplan/services/event_service.dart';
@@ -251,6 +250,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             color: Color(0xFF1C1C1E),
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
+
           child: Column(
             children: [
               Padding(
@@ -414,12 +414,19 @@ class _CreateEventPageState extends State<CreateEventPage> {
           icon: const Icon(Icons.arrow_back, size: 30, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
+
         title: const Text(
           'Create Event',
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(color: Colors.black.withOpacity(0.4)),
+          ),
+        ),
       ),
 
       body: Container(
@@ -460,7 +467,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.6),
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.white24),
+                          border: Border.all(color: Colors.white),
                         ),
 
                         child: const Text(
@@ -486,7 +493,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.6),
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.white24),
+                          border: Border.all(color: Colors.white),
                         ),
 
                         child: Column(
@@ -604,7 +611,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         0,
                       ).withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: Colors.white24),
+                      border: Border.all(color: Colors.white),
                     ),
 
                     child: Column(
@@ -668,7 +675,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       decoration: BoxDecoration(
                         color: Colors.black.withValues(alpha: 0.6),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.white24),
+                        border: Border.all(color: Colors.white),
                       ),
 
                       child: Column(

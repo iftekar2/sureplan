@@ -77,9 +77,10 @@ class _HomePageState extends State<HomePage> {
         );
       case 'not_going':
         return Image.network(
-          "https://img.icons8.com/?size=100&id=9433&format=png&color=000000",
+          "https://img.icons8.com/?size=100&id=4vD3CGn0ukPX&format=png&color=000000",
           width: 20,
           height: 20,
+          color: Colors.red,
         );
       case 'maybe':
         return Image.network(
