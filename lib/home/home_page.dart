@@ -231,10 +231,10 @@ class _HomePageState extends State<HomePage> {
             onRefresh: () async {
               _refreshEvents();
             },
-
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // 1. Header Section (Stays at the top)
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 20,
@@ -272,21 +272,29 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
 
+                // 2. Horizontal PageView Section
                 Expanded(
+                  // 💡 Expanded fills the remaining screen space
                   child: PageView.builder(
-                    controller: PageController(viewportFraction: 0.9),
+                    controller: PageController(
+                      viewportFraction: 0.9,
+                    ), // 💡 Shows a peek of next card
                     itemCount: events.length,
                     itemBuilder: (context, index) {
                       final event = events[index];
 
                       return Padding(
-                        padding: const EdgeInsets.only(right: 20),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 10.0,
+                        ),
                         child: GestureDetector(
                           onTap: () => _navigateToEventPage(event),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(40),
                             child: Stack(
                               children: [
+                                // --- BACKGROUND IMAGE ---
                                 Positioned.fill(
                                   child: Image.network(
                                     "https://images.unsplash.com/photo-1631983856436-02b31717416b?q=80&w=987&auto=format&fit=crop",
@@ -294,6 +302,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
 
+                                // --- GRADIENT BLEND ---
                                 Positioned.fill(
                                   child: DecoratedBox(
                                     decoration: BoxDecoration(
@@ -311,6 +320,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
 
+                                // --- SMOOTH BLENDED BLUR ---
                                 Positioned(
                                   bottom: 0,
                                   left: 0,
@@ -341,28 +351,18 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
 
+                                // --- EVENT TEXT CONTENT ---
                                 Positioned.fill(
                                   child: Padding(
                                     padding: const EdgeInsets.only(
                                       top: 20,
                                       bottom: 30,
-                                      left: 15,
-                                      right: 15,
+                                      left: 20,
+                                      right: 20,
                                     ),
-
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        // Text(
-                                        //   event.createdBy.username,
-                                        //   style: TextStyle(
-                                        //     color: Colors.white,
-                                        //     fontSize: 20,
-                                        //     fontWeight: FontWeight.w500,
-                                        //   ),
-                                        // ),
-
-                                        // const SizedBox(height: 10),
                                         Text(
                                           event.title,
                                           textAlign: TextAlign.center,
@@ -372,7 +372,6 @@ class _HomePageState extends State<HomePage> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-
                                         const SizedBox(height: 10),
                                         Text(
                                           DateFormat(
@@ -383,7 +382,6 @@ class _HomePageState extends State<HomePage> {
                                             fontSize: 18,
                                           ),
                                         ),
-
                                         const SizedBox(height: 6),
                                         Text(
                                           event.location,
@@ -398,6 +396,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
 
+                                // --- STATUS BADGE ---
                                 Positioned(
                                   top: 25,
                                   left: 25,
@@ -411,7 +410,6 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(color: Colors.white24),
                                     ),
-
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -436,7 +434,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 20), // Bottom padding
               ],
             ),
           );

@@ -38,6 +38,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     _fetchHostUsername();
     _titleController.addListener(_onTextChanged);
     _locationController.addListener(_onTextChanged);
+    _descriptionController.addListener(_onTextChanged);
   }
 
   void _onTextChanged() {
@@ -596,7 +597,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.6),
+                      color: const Color.fromARGB(
+                        255,
+                        0,
+                        0,
+                        0,
+                      ).withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(color: Colors.white24),
                     ),

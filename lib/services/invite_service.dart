@@ -13,7 +13,7 @@ class InviteService {
     final response = await _supabase
         .from('user_profiles')
         .select()
-        .or('username.ilike.%$query%,email.ilike.%$query%')
+        .or('username.ilike.%$query%')
         .neq('id', currentUserId) // Don't show myself
         .limit(20);
 
@@ -70,7 +70,7 @@ class InviteService {
   /// Respond to an invite
   Future<void> respondToInvite({
     required String inviteId,
-    required String status, // 'going', 'not_going', 'maybe'
+    required String status,
   }) async {
     await _supabase
         .from('event_invites')
