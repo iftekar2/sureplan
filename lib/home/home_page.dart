@@ -232,196 +232,212 @@ class _HomePageState extends State<HomePage> {
               _refreshEvents();
             },
 
-            child: ListView.builder(
-              padding: EdgeInsets.all(20),
-              itemCount: events.length + 1,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Upcoming Events",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        IconButton(
-                          icon: Icon(
-                            Icons.add_circle,
-                            size: 40,
-                            color: Colors.black,
-                          ),
-                          onPressed: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CreateEventPage(),
-                              ),
-                            );
-                            if (result == true) {
-                              _refreshEvents();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                // Display events
-                final event = events[index - 1];
-                return GestureDetector(
-                  onTap: () => _navigateToEventPage(event),
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 15),
-                    height: 600,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(40),
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: Image.network(
-                              "https://images.unsplash.com/photo-1631983856436-02b31717416b?q=80&w=987&auto=format&fit=crop",
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-
-                          Positioned.fill(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black.withOpacity(0.3),
-                                    Colors.black.withOpacity(0.9),
-                                  ],
-                                  stops: const [0.3, 0.6, 1.0],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            height: 400,
-                            child: ShaderMask(
-                              shaderCallback: (rect) {
-                                return LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.black.withOpacity(0),
-                                    Colors.black,
-                                  ],
-                                  stops: const [0.0, 0.3],
-                                ).createShader(rect);
-                              },
-                              blendMode: BlendMode.dstIn,
-                              child: ClipRRect(
-                                child: BackdropFilter(
-                                  filter: ImageFilter.blur(
-                                    sigmaX: 25.0,
-                                    sigmaY: 25.0,
-                                  ),
-                                  child: Container(
-                                    color: Colors.black.withOpacity(0.2),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          Positioned.fill(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                top: 20,
-                                bottom: 30,
-                                left: 20,
-                                right: 20,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    event.title,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    DateFormat(
-                                      'EEE, MMM d, h:mm a',
-                                    ).format(event.dateTime),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    event.location,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          Positioned(
-                            top: 25,
-                            left: 25,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.white24),
-                              ),
-
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  _getStatusIcon(event.status),
-
-                                  SizedBox(width: 6),
-                                  Text(
-                                    _getStatusText(event.status),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 10,
+                    top: 20,
+                    bottom: 10,
                   ),
-                );
-              },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Upcoming Events",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.add_circle,
+                          size: 40,
+                          color: Colors.black,
+                        ),
+                        onPressed: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CreateEventPage(),
+                            ),
+                          );
+                          if (result == true) _refreshEvents();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                Expanded(
+                  child: PageView.builder(
+                    controller: PageController(viewportFraction: 0.9),
+                    itemCount: events.length,
+                    itemBuilder: (context, index) {
+                      final event = events[index];
+
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: GestureDetector(
+                          onTap: () => _navigateToEventPage(event),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(40),
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: Image.network(
+                                    "https://images.unsplash.com/photo-1631983856436-02b31717416b?q=80&w=987&auto=format&fit=crop",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+
+                                Positioned.fill(
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.black.withOpacity(0.3),
+                                          Colors.black.withOpacity(0.9),
+                                        ],
+                                        stops: const [0.3, 0.6, 1.0],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  height: 400,
+                                  child: ShaderMask(
+                                    shaderCallback: (rect) {
+                                      return LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.black.withOpacity(0),
+                                          Colors.black,
+                                        ],
+                                        stops: const [0.0, 0.3],
+                                      ).createShader(rect);
+                                    },
+                                    blendMode: BlendMode.dstIn,
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                        sigmaX: 25.0,
+                                        sigmaY: 25.0,
+                                      ),
+                                      child: Container(
+                                        color: Colors.black.withOpacity(0.2),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                Positioned.fill(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 20,
+                                      bottom: 30,
+                                      left: 15,
+                                      right: 15,
+                                    ),
+
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        // Text(
+                                        //   event.createdBy.username,
+                                        //   style: TextStyle(
+                                        //     color: Colors.white,
+                                        //     fontSize: 20,
+                                        //     fontWeight: FontWeight.w500,
+                                        //   ),
+                                        // ),
+
+                                        // const SizedBox(height: 10),
+                                        Text(
+                                          event.title,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          DateFormat(
+                                            'EEE, MMM d, h:mm a',
+                                          ).format(event.dateTime),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          event.location,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                Positioned(
+                                  top: 25,
+                                  left: 25,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(color: Colors.white24),
+                                    ),
+
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        _getStatusIcon(event.status),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          _getStatusText(event.status),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
           );
         },
