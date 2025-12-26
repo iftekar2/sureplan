@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sureplan/auth/authService.dart';
-import 'package:sureplan/events/editEventPage.dart';
-import 'package:sureplan/events/inviteUsersPage.dart';
+import 'package:sureplan/auth/auth_service.dart';
+import 'package:sureplan/events/edit_event_page.dart';
+import 'package:sureplan/events/invite_users_page.dart';
 import 'package:sureplan/models/event.dart';
 import 'package:sureplan/models/invite.dart';
 import 'package:sureplan/models/user_profile.dart';
-import 'package:sureplan/services/eventService.dart';
-import 'package:sureplan/services/inviteService.dart';
+import 'package:sureplan/services/event_service.dart';
+import 'package:sureplan/services/invite_service.dart';
 
 class EventPage extends StatefulWidget {
   final Event event;

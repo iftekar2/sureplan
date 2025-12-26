@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sureplan/models/event.dart';
-import 'package:sureplan/services/eventService.dart';
+import 'package:sureplan/services/event_service.dart';
 
 class EditEventPage extends StatefulWidget {
   final Event event;

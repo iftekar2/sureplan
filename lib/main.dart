@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:sureplan/auth/authGate.dart';
-import 'package:sureplan/notification/notificationService.dart';
+import 'package:sureplan/auth/auth_gate.dart';
+import 'package:sureplan/notification/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

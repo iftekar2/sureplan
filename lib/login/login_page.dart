@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sureplan/auth/authService.dart';
-import 'package:sureplan/auth/googleService.dart';
-import 'package:sureplan/forgot_password/forgotPasswordPage.dart';
-import 'package:sureplan/home/homePage.dart';
+import 'package:sureplan/auth/auth_service.dart';
+import 'package:sureplan/auth/google_service.dart';
+import 'package:sureplan/forgot_password/forgot_password_page.dart';
+import 'package:sureplan/home/home_page.dart';
 import 'package:sureplan/main.dart';
 import 'package:sureplan/main_scaffold.dart';
-import 'package:sureplan/signup/signupPage.dart';
+import 'package:sureplan/signup/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

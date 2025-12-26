@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sureplan/auth/authGate.dart';
-import 'package:sureplan/auth/authService.dart';
+import 'package:sureplan/auth/auth_gate.dart';
+import 'package:sureplan/auth/auth_service.dart';
 
 class ConfirmEmailPage extends StatefulWidget {
   final String email;

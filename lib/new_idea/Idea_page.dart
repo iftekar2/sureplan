@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:sureplan/new_idea/featureService.dart';
+import 'package:sureplan/new_idea/feature_service.dart';
 
 class IdeaPage extends StatefulWidget {
   const IdeaPage({super.key});

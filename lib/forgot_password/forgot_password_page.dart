@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sureplan/auth/authService.dart';
-import 'package:sureplan/login/loginPage.dart';
+import 'package:sureplan/auth/auth_service.dart';
+import 'package:sureplan/login/login_page.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});

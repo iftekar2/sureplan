@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:sureplan/login/loginPage.dart';
-import 'package:sureplan/signup/signupPage.dart';
+import 'package:sureplan/login/login_page.dart';
+import 'package:sureplan/signup/signup_page.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:sureplan/auth/authService.dart';
-import 'package:sureplan/settings/accountPage.dart';
-import 'package:sureplan/welcome/welcomePage.dart';
+import 'package:sureplan/auth/auth_service.dart';
+import 'package:sureplan/settings/account_page.dart';
+import 'package:sureplan/welcome/welcome_page.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

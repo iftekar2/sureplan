@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 
-import 'package:sureplan/events/createEventPage.dart';
-import 'package:sureplan/events/eventPage.dart';
+import 'package:sureplan/events/create_event_page.dart';
+import 'package:sureplan/events/event_page.dart';
 import 'package:sureplan/models/event.dart';
-import 'package:sureplan/services/eventService.dart';
+import 'package:sureplan/services/event_service.dart';
 import 'package:sureplan/settings/profile.dart';
 
 class HomePage extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:sureplan/auth/authService.dart';
+import 'package:sureplan/auth/auth_service.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -172,7 +172,7 @@ class _AccountPageState extends State<AccountPage> {
         backgroundColor: Colors.white,
 
         title: Text('Edit Username'),
-        content: Container(
+        content: SizedBox(
           height: 110,
           width: double.maxFinite,
           child: Column(
@@ -282,7 +282,7 @@ class _AccountPageState extends State<AccountPage> {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         title: Text('Change Password'),
-        content: Container(
+        content: SizedBox(
           height: 220,
           child: Column(
             children: [

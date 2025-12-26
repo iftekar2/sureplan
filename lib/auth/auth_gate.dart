@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/main_scaffold.dart';
-import 'package:sureplan/welcome/welcomePage.dart';
+import 'package:sureplan/welcome/welcome_page.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});

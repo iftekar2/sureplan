@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:sureplan/events/selectInviteesPage.dart';
+import 'package:sureplan/events/select_invitees_page.dart';
 import 'package:sureplan/models/user_profile.dart';
-import 'package:sureplan/services/eventService.dart';
-import 'package:sureplan/services/inviteService.dart';
+import 'package:sureplan/services/event_service.dart';
+import 'package:sureplan/services/invite_service.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:sureplan/home/homePage.dart';
-import 'package:sureplan/home/invitationsPage.dart';
-import 'package:sureplan/new_idea/IdeaPage.dart';
-import 'package:sureplan/notification/notificationService.dart';
+import 'package:sureplan/home/home_page.dart';
+import 'package:sureplan/home/invitations_page.dart';
+import 'package:sureplan/new_idea/Idea_page.dart';
+import 'package:sureplan/notification/notification_service.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sureplan/models/user_profile.dart';
-import 'package:sureplan/services/inviteService.dart';
+import 'package:sureplan/services/invite_service.dart';
 
 class SelectInviteesPage extends StatefulWidget {
   final List<UserProfile> alreadySelected;
