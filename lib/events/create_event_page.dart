@@ -474,7 +474,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 50),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: BackdropFilter(
@@ -764,6 +764,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
                             ),
                           ),
                   ),
+
+                  SizedBox(height: 30),
                 ],
               ),
             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
-
+import 'dart:ui';
 import 'package:sureplan/events/create_event_page.dart';
 import 'package:sureplan/events/event_page.dart';
 import 'package:sureplan/models/event.dart';
@@ -40,6 +40,55 @@ class _HomePageState extends State<HomePage> {
 
     if (result == true) {
       _refreshEvents();
+    }
+  }
+
+  String _getStatusText(String? status) {
+    if (status == null) return "Invited";
+    switch (status.toLowerCase()) {
+      case 'hosting':
+        return "Hosting";
+      case 'going':
+        return "Going";
+      case 'not_going':
+        return "Not Going";
+      case 'maybe':
+        return "Maybe";
+      default:
+        return status;
+    }
+  }
+
+  Widget _getStatusIcon(String? status) {
+    if (status == null) return const Icon(Icons.mail_outline);
+
+    switch (status.toLowerCase()) {
+      case 'hosting':
+        return Image.network(
+          "https://img.icons8.com/?size=100&id=12566&format=png&color=FFFFFF",
+          width: 20,
+          height: 20,
+        );
+      case 'going':
+        return Image.network(
+          "https://img.icons8.com/?size=100&id=91kLZWvmd4sg&format=png&color=000000",
+          width: 20,
+          height: 20,
+        );
+      case 'not_going':
+        return Image.network(
+          "https://img.icons8.com/?size=100&id=9433&format=png&color=000000",
+          width: 20,
+          height: 20,
+        );
+      case 'maybe':
+        return Image.network(
+          "https://img.icons8.com/?size=100&id=kHG4p2DyB85t&format=png&color=000000",
+          width: 20,
+          height: 20,
+        );
+      default:
+        return const Icon(Icons.info_outline, color: Colors.white);
     }
   }
 
@@ -228,60 +277,142 @@ class _HomePageState extends State<HomePage> {
                 final event = events[index - 1];
                 return GestureDetector(
                   onTap: () => _navigateToEventPage(event),
-                  child: Card(
-                    margin: EdgeInsets.only(bottom: 15),
-                    color: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      side: BorderSide(color: Colors.grey[400]!, width: 1),
-                    ),
-
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 15),
+                    height: 600,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: Stack(
                         children: [
-                          Text(
-                            event.createdBy.username,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-
-                          Text(
-                            event.title,
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-
-                          SizedBox(height: 10),
-
-                          Text(
-                            DateFormat(
-                              'MMM d, y • h:mm a',
-                            ).format(event.dateTime),
-                            style: TextStyle(
-                              color: Colors.grey[700],
-                              fontSize: 18,
+                          Positioned.fill(
+                            child: Image.network(
+                              "https://images.unsplash.com/photo-1631983856436-02b31717416b?q=80&w=987&auto=format&fit=crop",
+                              fit: BoxFit.cover,
                             ),
                           ),
 
-                          SizedBox(height: 10),
+                          Positioned.fill(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black.withOpacity(0.3),
+                                    Colors.black.withOpacity(0.9),
+                                  ],
+                                  stops: const [0.3, 0.6, 1.0],
+                                ),
+                              ),
+                            ),
+                          ),
 
-                          SizedBox(
-                            width: 250,
-                            child: Text(
-                              event.location,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 20,
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: 400,
+                            child: ShaderMask(
+                              shaderCallback: (rect) {
+                                return LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black.withOpacity(0),
+                                    Colors.black,
+                                  ],
+                                  stops: const [0.0, 0.3],
+                                ).createShader(rect);
+                              },
+                              blendMode: BlendMode.dstIn,
+                              child: ClipRRect(
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 25.0,
+                                    sigmaY: 25.0,
+                                  ),
+                                  child: Container(
+                                    color: Colors.black.withOpacity(0.2),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 20,
+                                bottom: 30,
+                                left: 20,
+                                right: 20,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    event.title,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    DateFormat(
+                                      'EEE, MMM d, h:mm a',
+                                    ).format(event.dateTime),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    event.location,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          Positioned(
+                            top: 25,
+                            left: 25,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.white24),
+                              ),
+
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _getStatusIcon(event.status),
+
+                                  SizedBox(width: 6),
+                                  Text(
+                                    _getStatusText(event.status),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

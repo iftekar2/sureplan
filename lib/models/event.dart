@@ -21,6 +21,9 @@ class Event {
   final String? description;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? status;
+  final String? inviteeId;
+  final String? inviteeStatus;
 
   Event({
     required this.id,
@@ -31,6 +34,9 @@ class Event {
     required this.description,
     required this.createdAt,
     required this.updatedAt,
+    required this.status,
+    required this.inviteeId,
+    required this.inviteeStatus,
   });
 
   // Create Event from JSON (from Supabase)
@@ -45,7 +51,7 @@ class Event {
     return Event(
       id: json['id'] as String,
       title: json['title'] as String,
-      dateTime: parsedDateTime.toLocal(), // Convert UTC to local time
+      dateTime: parsedDateTime.toLocal(),
       location: json['location'] as String,
       createdBy: creatorData != null
           ? EventCreator.fromJson(creatorData, creatorId)
@@ -53,6 +59,9 @@ class Event {
       description: json['description'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
+      status: json['status'] as String?,
+      inviteeId: json['invitee_id'] as String?,
+      inviteeStatus: json['invitee_status'] as String?,
     );
   }
 
@@ -64,6 +73,9 @@ class Event {
       'location': location,
       'created_by': createdBy.id,
       'description': description,
+      'status': status,
+      'invitee_id': inviteeId,
+      'invitee_status': inviteeStatus,
     };
   }
 
@@ -77,6 +89,9 @@ class Event {
     String? description,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? status,
+    String? inviteeId,
+    String? inviteeStatus,
   }) {
     return Event(
       id: id ?? this.id,
@@ -87,6 +102,9 @@ class Event {
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      status: status ?? this.status,
+      inviteeId: inviteeId ?? this.inviteeId,
+      inviteeStatus: inviteeStatus ?? this.inviteeStatus,
     );
   }
 }

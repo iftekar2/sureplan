@@ -33,7 +33,12 @@ class EventService {
         .select('*, user_profiles(username)')
         .single();
 
-    return Event.fromJson(response);
+    final Map<String, dynamic> eventWithStatus = Map.from(response);
+    eventWithStatus['status'] = 'Hosting';
+    eventWithStatus['invitee_id'] = userId;
+    eventWithStatus['invitee_status'] = 'Hosting';
+
+    return Event.fromJson(eventWithStatus);
   }
 
   /// Get all events
@@ -61,9 +66,15 @@ class EventService {
         .eq('created_by', userId)
         .order('date_time', ascending: true);
 
-    return (response as List)
-        .map((json) => Event.fromJson(json as Map<String, dynamic>))
-        .toList();
+    return (response as List).map((json) {
+      final Map<String, dynamic> eventWithStatus = Map<String, dynamic>.from(
+        json as Map,
+      );
+      eventWithStatus['status'] = 'Hosting';
+      eventWithStatus['invitee_id'] = userId;
+      eventWithStatus['invitee_status'] = 'Hosting';
+      return Event.fromJson(eventWithStatus);
+    }).toList();
   }
 
   /// Get a single event by ID
@@ -74,7 +85,15 @@ class EventService {
         .eq('id', eventId)
         .single();
 
-    return Event.fromJson(response);
+    final Map<String, dynamic> eventWithStatus = Map.from(response);
+    final userId = _supabase.auth.currentUser?.id;
+    if (response['created_by'] == userId) {
+      eventWithStatus['status'] = 'Hosting';
+      eventWithStatus['invitee_id'] = userId;
+      eventWithStatus['invitee_status'] = 'Hosting';
+    }
+
+    return Event.fromJson(eventWithStatus);
   }
 
   /// Update an event
@@ -99,7 +118,13 @@ class EventService {
         .select('*, user_profiles(username)')
         .single();
 
-    return Event.fromJson(response);
+    final Map<String, dynamic> eventWithStatus = Map.from(response);
+    final userId = _supabase.auth.currentUser?.id;
+    eventWithStatus['status'] = 'Hosting';
+    eventWithStatus['invitee_id'] = userId;
+    eventWithStatus['invitee_status'] = 'Hosting';
+
+    return Event.fromJson(eventWithStatus);
   }
 
   /// Delete an event
@@ -122,9 +147,13 @@ class EventService {
         .gte('date_time', now)
         .order('date_time', ascending: true);
 
-    final createdEvents = (createdResponse as List)
-        .map((json) => Event.fromJson(json as Map<String, dynamic>))
-        .toList();
+    final createdEvents = (createdResponse as List).map((json) {
+      final eventMap = Map<String, dynamic>.from(json as Map);
+      eventMap['status'] = 'Hosting';
+      eventMap['invitee_id'] = userId;
+      eventMap['invitee_status'] = 'Hosting';
+      return Event.fromJson(eventMap);
+    }).toList();
 
     print('DEBUG: Created events count: ${createdEvents.length}');
 
@@ -142,16 +171,18 @@ class EventService {
     print('DEBUG: Current time: $nowDateTime (${nowDateTime.toUtc()} UTC)');
 
     final invitedEvents = (invitedResponse as List)
-        .map((json) => json['events'])
-        .where((eventJson) {
-          if (eventJson == null) {
-            print('DEBUG: Skipping null event');
-            return false;
-          }
-          return true;
-        })
-        .map((eventJson) {
-          final event = Event.fromJson(eventJson as Map<String, dynamic>);
+        .where((json) => json['events'] != null)
+        .map((json) {
+          final eventJson = json['events'] as Map<String, dynamic>;
+          final eventMap = Map<String, dynamic>.from(eventJson);
+          final inviteStatus = json['status'] as String?;
+
+          eventMap['status'] = inviteStatus;
+          eventMap['invitee_id'] = userId;
+          eventMap['invitee_status'] = inviteStatus;
+
+          final event = Event.fromJson(eventMap);
+
           print(
             'DEBUG: Event "${event.title}" - date_time: ${event.dateTime} (${event.dateTime.toUtc()} UTC)',
           );
