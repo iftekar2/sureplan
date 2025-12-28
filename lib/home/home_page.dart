@@ -65,9 +65,9 @@ class _HomePageState extends State<HomePage> {
     switch (status.toLowerCase()) {
       case 'hosting':
         return Image.network(
-          "https://img.icons8.com/?size=100&id=12566&format=png&color=FFFFFF",
-          width: 20,
-          height: 20,
+          "https://img.icons8.com/?size=100&id=12608&format=png&color=000000",
+          width: 25,
+          height: 25,
         );
       case 'going':
         return Image.network(
@@ -275,11 +275,8 @@ class _HomePageState extends State<HomePage> {
 
                 // 2. Horizontal PageView Section
                 Expanded(
-                  // 💡 Expanded fills the remaining screen space
                   child: PageView.builder(
-                    controller: PageController(
-                      viewportFraction: 0.9,
-                    ), // 💡 Shows a peek of next card
+                    controller: PageController(viewportFraction: 0.9),
                     itemCount: events.length,
                     itemBuilder: (context, index) {
                       final event = events[index];
@@ -295,7 +292,6 @@ class _HomePageState extends State<HomePage> {
                             borderRadius: BorderRadius.circular(40),
                             child: Stack(
                               children: [
-                                // --- BACKGROUND IMAGE ---
                                 Positioned.fill(
                                   child: Image.network(
                                     event.backgroundImage ??
@@ -304,7 +300,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
 
-                                // --- GRADIENT BLEND ---
                                 Positioned.fill(
                                   child: DecoratedBox(
                                     decoration: BoxDecoration(
@@ -322,7 +317,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
 
-                                // --- SMOOTH BLENDED BLUR ---
                                 Positioned(
                                   bottom: 0,
                                   left: 0,
@@ -353,7 +347,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
 
-                                // --- EVENT TEXT CONTENT ---
                                 Positioned.fill(
                                   child: Padding(
                                     padding: const EdgeInsets.only(
@@ -398,7 +391,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
 
-                                // --- STATUS BADGE ---
                                 Positioned(
                                   top: 25,
                                   left: 25,
@@ -407,16 +399,19 @@ class _HomePageState extends State<HomePage> {
                                       horizontal: 14,
                                       vertical: 8,
                                     ),
+
                                     decoration: BoxDecoration(
                                       color: Colors.white.withOpacity(0.2),
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(color: Colors.white24),
                                     ),
+
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         _getStatusIcon(event.status),
-                                        const SizedBox(width: 6),
+                                        const SizedBox(width: 10),
+
                                         Text(
                                           _getStatusText(event.status),
                                           style: const TextStyle(
@@ -436,7 +431,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                 ),
-                const SizedBox(height: 20), // Bottom padding
+                const SizedBox(height: 20),
               ],
             ),
           );

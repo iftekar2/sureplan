@@ -440,6 +440,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
           'Create Event',
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
+
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: ClipRect(
@@ -450,70 +451,266 @@ class _CreateEventPageState extends State<CreateEventPage> {
         ),
       ),
 
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: _imageFile != null
-                ? FileImage(_imageFile!) as ImageProvider
-                : NetworkImage(
-                    "https://images.unsplash.com/photo-1631983856436-02b31717416b?q=80&w=987&auto=format&fit=crop",
-                  ),
-            alignment: Alignment.topCenter,
-            repeat: ImageRepeat.repeatY,
-            fit: BoxFit.fitWidth,
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 1000,
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: _imageFile != null
+                      ? FileImage(_imageFile!) as ImageProvider
+                      : NetworkImage(
+                          "https://images.unsplash.com/photo-1631983856436-02b31717416b?q=80&w=987&auto=format&fit=crop",
+                        ),
+                  alignment: Alignment.topCenter,
+                  repeat: ImageRepeat.noRepeat,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
           ),
-        ),
+          SafeArea(
+            top: true,
+            bottom: false,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 250),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 30,
+                            vertical: 10,
+                          ),
 
-        child: SafeArea(
-          top: true,
-          bottom: false,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 250),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 30,
-                          vertical: 10,
-                        ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: Colors.white),
+                          ),
 
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.6),
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.white),
-                        ),
-
-                        child: GestureDetector(
-                          onTap: _pickImage,
-                          child: Text(
-                            "Edit Background",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20,
+                          child: GestureDetector(
+                            onTap: _pickImage,
+                            child: Text(
+                              "Edit Background",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 20,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 50),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-                      child: Container(
+                    const SizedBox(height: 50),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: Colors.white),
+                          ),
+
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFormField(
+                                controller: _titleController,
+                                textAlign: TextAlign.center,
+                                maxLines: null,
+                                keyboardType: TextInputType.multiline,
+                                textInputAction: TextInputAction.newline,
+
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: _calculateFontSize(),
+                                  fontWeight: FontWeight.bold,
+                                ),
+
+                                decoration: InputDecoration(
+                                  hintText: 'Event Title',
+                                  hintStyle: TextStyle(color: Colors.white70),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                ),
+                              ),
+
+                              const Divider(
+                                color: Color.fromARGB(57, 218, 218, 218),
+                                height: 30,
+                              ),
+
+                              // 2. Date and Time Section
+                              GestureDetector(
+                                onTap: () => _selectDateTime(),
+                                child: Column(
+                                  children: [
+                                    Image.network(
+                                      "https://img.icons8.com/?size=100&id=mlr7FnQ3G7zb&format=png&color=000000",
+                                      color: Colors.white,
+                                      height: 40,
+                                      width: 40,
+                                    ),
+
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      DateFormat(
+                                        'E, MMMM d, h:mm a',
+                                      ).format(_selectedDateTime),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              const Divider(
+                                color: Color.fromARGB(57, 218, 218, 218),
+                                height: 30,
+                              ),
+
+                              GestureDetector(
+                                onTap: () => {},
+
+                                child: Column(
+                                  children: [
+                                    Image.network(
+                                      "https://img.icons8.com/?size=100&id=43731&format=png&color=000000",
+                                      color: Colors.white,
+                                      height: 30,
+                                      width: 30,
+                                    ),
+
+                                    const SizedBox(height: 8),
+
+                                    TextField(
+                                      controller: _locationController,
+                                      textAlign: TextAlign.center,
+                                      maxLines: null,
+                                      keyboardType: TextInputType.multiline,
+                                      textInputAction: TextInputAction.newline,
+
+                                      // onChanged: (value)
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+
+                                      decoration: InputDecoration(
+                                        hintText: "Location",
+                                        hintStyle: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                        border: InputBorder.none,
+                                        isDense: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 10),
+
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(
+                          255,
+                          0,
+                          0,
+                          0,
+                        ).withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: Colors.white),
+                      ),
+
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              child: RichText(
+                                textAlign: TextAlign.center,
+
+                                text: TextSpan(
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
+
+                                  children: [
+                                    const TextSpan(
+                                      text: "Hosted by ",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+
+                                    TextSpan(
+                                      text: _hostUsername ?? '...',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 20),
+
+                          GestureDetector(
+                            onTap: () => _showEventDetails(context),
+                            child: Text(
+                              _descriptionController.text.isEmpty
+                                  ? "Add a description...."
+                                  : _descriptionController.text,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    if (_selectedInvitees.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      Container(
                         padding: const EdgeInsets.all(20),
                         width: double.infinity,
                         decoration: BoxDecoration(
@@ -523,293 +720,112 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         ),
 
                         child: Column(
-                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            TextFormField(
-                              controller: _titleController,
-                              textAlign: TextAlign.center,
-                              maxLines: null,
-                              keyboardType: TextInputType.multiline,
-                              textInputAction: TextInputAction.newline,
-
+                            const Text(
+                              "Who's Invited?",
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: _calculateFontSize(),
+                                fontSize: 22,
                                 fontWeight: FontWeight.bold,
-                              ),
-
-                              decoration: InputDecoration(
-                                hintText: 'Event Title',
-                                hintStyle: TextStyle(color: Colors.white70),
-                                border: InputBorder.none,
-                                isDense: true,
+                                color: Colors.white,
                               ),
                             ),
 
-                            const Divider(
-                              color: Color.fromARGB(57, 218, 218, 218),
-                              height: 30,
-                            ),
-
-                            // 2. Date and Time Section
-                            GestureDetector(
-                              onTap: () => _selectDateTime(),
-                              child: Column(
-                                children: [
-                                  Image.network(
-                                    "https://img.icons8.com/?size=100&id=mlr7FnQ3G7zb&format=png&color=000000",
-                                    color: Colors.white,
-                                    height: 40,
-                                    width: 40,
-                                  ),
-
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    DateFormat(
-                                      'E, MMMM d, h:mm a',
-                                    ).format(_selectedDateTime),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const Divider(
-                              color: Color.fromARGB(57, 218, 218, 218),
-                              height: 30,
-                            ),
-
-                            GestureDetector(
-                              onTap: () => {},
-
-                              child: Column(
-                                children: [
-                                  Image.network(
-                                    "https://img.icons8.com/?size=100&id=43731&format=png&color=000000",
-                                    color: Colors.white,
-                                    height: 30,
-                                    width: 30,
-                                  ),
-
-                                  const SizedBox(height: 8),
-
-                                  TextField(
-                                    controller: _locationController,
-                                    textAlign: TextAlign.center,
-                                    maxLines: null,
-                                    keyboardType: TextInputType.multiline,
-                                    textInputAction: TextInputAction.newline,
-
-                                    // onChanged: (value)
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                    ),
-
-                                    decoration: InputDecoration(
-                                      hintText: "Location",
-                                      hintStyle: TextStyle(color: Colors.white),
-                                      border: InputBorder.none,
-                                      isDense: true,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            const SizedBox(height: 15),
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: 8.0,
+                              runSpacing: 8.0,
+                              children: _selectedInvitees
+                                  .map((user) => _buildInviteeChip(user))
+                                  .toList(),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ),
+                    ],
 
-                  SizedBox(height: 10),
+                    SizedBox(height: 20),
 
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(
-                        255,
-                        0,
-                        0,
-                        0,
-                      ).withValues(alpha: 0.6),
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: Colors.white),
-                    ),
-
-                    child: Column(
-                      children: [
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: RichText(
-                              textAlign: TextAlign.center,
-
-                              text: TextSpan(
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),
-
-                                children: [
-                                  const TextSpan(
-                                    text: "Hosted by ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-
-                                  TextSpan(
-                                    text: _hostUsername ?? '...',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      height: 1.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 20),
-
-                        GestureDetector(
-                          onTap: () => _showEventDetails(context),
-                          child: Text(
-                            _descriptionController.text.isEmpty
-                                ? "Add a description...."
-                                : _descriptionController.text,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  if (_selectedInvitees.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.6),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.white),
+                    // Invite friends
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Color.fromARGB(218, 0, 0, 0),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        side: BorderSide(color: Colors.white),
+                        minimumSize: Size(250, 55),
                       ),
 
-                      child: Column(
+                      onPressed: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SelectInviteesPage(
+                              alreadySelected: _selectedInvitees,
+                            ),
+                          ),
+                        );
+
+                        if (result != null && result is List<UserProfile>) {
+                          setState(() {
+                            _selectedInvitees = result;
+                          });
+                        }
+                      },
+
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Who's Invited?",
+                          Icon(Icons.people, size: 30),
+
+                          SizedBox(width: 10),
+                          Text(
+                            'Invite Friends',
                             style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-
-                          const SizedBox(height: 15),
-                          Wrap(
-                            alignment: WrapAlignment.center,
-                            spacing: 8.0,
-                            runSpacing: 8.0,
-                            children: _selectedInvitees
-                                .map((user) => _buildInviteeChip(user))
-                                .toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-
-                  SizedBox(height: 20),
-
-                  // Invite friends
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Color.fromARGB(218, 0, 0, 0),
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      side: BorderSide(color: Colors.white),
-                      minimumSize: Size(250, 55),
-                    ),
-
-                    onPressed: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SelectInviteesPage(
-                            alreadySelected: _selectedInvitees,
-                          ),
-                        ),
-                      );
-
-                      if (result != null && result is List<UserProfile>) {
-                        setState(() {
-                          _selectedInvitees = result;
-                        });
-                      }
-                    },
-
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(Icons.people, size: 30),
-
-                        SizedBox(width: 10),
-                        Text(
-                          'Invite Friends',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: 40),
-
-                  // Create button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _isFormValid
-                          ? Color(0xFF0887ff)
-                          : Colors.grey,
-
-                      minimumSize: Size(double.infinity, 60),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-
-                    onPressed: _isLoading ? null : _createEvent,
-                    child: _isLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text(
-                            'Create Event',
-                            style: TextStyle(
-                              color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                  ),
+                        ],
+                      ),
+                    ),
 
-                  SizedBox(height: 30),
-                ],
+                    SizedBox(height: 40),
+
+                    // Create button
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _isFormValid
+                            ? Color(0xFF0887ff)
+                            : Colors.grey,
+
+                        minimumSize: Size(double.infinity, 60),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+
+                      onPressed: _isLoading ? null : _createEvent,
+                      child: _isLoading
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                              'Create Event',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                    ),
+
+                    SizedBox(height: 30),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
