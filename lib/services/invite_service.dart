@@ -59,12 +59,20 @@ class InviteService {
         .from('event_invites')
         .select('*, events(*), inviter:user_profiles!inviter_id(*)')
         .eq('invitee_id', currentUserId)
-        .eq('status', 'pending')
-        .order('created_at', ascending: false);
+        .eq('status', 'pending');
 
-    return (response as List)
+    final invites = (response as List)
         .map((json) => Invite.fromJson(json as Map<String, dynamic>))
         .toList();
+
+    // Sort by event date (chronological)
+    invites.sort((a, b) {
+      final dateA = a.event?.dateTime ?? DateTime.fromMillisecondsSinceEpoch(0);
+      final dateB = b.event?.dateTime ?? DateTime.fromMillisecondsSinceEpoch(0);
+      return dateA.compareTo(dateB);
+    });
+
+    return invites;
   }
 
   /// Respond to an invite

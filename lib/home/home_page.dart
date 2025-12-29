@@ -235,7 +235,6 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. Header Section (Stays at the top)
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 20,
@@ -243,6 +242,7 @@ class _HomePageState extends State<HomePage> {
                     top: 20,
                     bottom: 10,
                   ),
+
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -253,6 +253,7 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+
                       IconButton(
                         icon: const Icon(
                           Icons.add_circle,
@@ -273,7 +274,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
 
-                // 2. Horizontal PageView Section
                 Expanded(
                   child: PageView.builder(
                     controller: PageController(viewportFraction: 0.9),
@@ -355,6 +355,7 @@ class _HomePageState extends State<HomePage> {
                                       left: 20,
                                       right: 20,
                                     ),
+
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
@@ -367,6 +368,7 @@ class _HomePageState extends State<HomePage> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
+
                                         const SizedBox(height: 10),
                                         Text(
                                           DateFormat(
