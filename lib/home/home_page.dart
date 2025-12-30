@@ -8,6 +8,8 @@ import 'package:sureplan/models/event.dart';
 import 'package:sureplan/services/event_service.dart';
 import 'package:sureplan/settings/profile.dart';
 
+enum EventFilter { upcoming, hosting, attending }
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -28,7 +30,18 @@ class _HomePageState extends State<HomePage> {
 
   void _refreshEvents() {
     setState(() {
-      _eventsFuture = _eventService.getUpcomingEvents();
+      _eventsFuture = _eventService.getUpcomingEvents().then((events) {
+        if (_currentFilter == EventFilter.hosting) {
+          return events
+              .where((e) => e.status?.toLowerCase() == 'hosting')
+              .toList();
+        } else if (_currentFilter == EventFilter.attending) {
+          return events
+              .where((e) => e.status?.toLowerCase() != 'hosting')
+              .toList();
+        }
+        return events;
+      });
     });
   }
 
@@ -93,11 +106,75 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  PopupMenuItem<EventFilter> _buildMenuItem(EventFilter value, String text) {
+    return PopupMenuItem<EventFilter>(
+      value: value,
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  EventFilter _currentFilter = EventFilter.upcoming;
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text("SuperPlan", style: TextStyle(fontWeight: FontWeight.w600)),
+        leadingWidth: 150,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: PopupMenuButton<EventFilter>(
+            offset: const Offset(0, 40),
+            color: Colors.grey[900],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  _currentFilter.name[0].toUpperCase() +
+                      _currentFilter.name.substring(1),
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(width: 4),
+                const Icon(
+                  Icons.unfold_more_rounded,
+                  color: Colors.black,
+                  size: 20,
+                ),
+              ],
+            ),
+
+            onSelected: (EventFilter result) {
+              setState(() {
+                _currentFilter = result;
+                _refreshEvents();
+              });
+            },
+
+            itemBuilder: (BuildContext context) =>
+                <PopupMenuEntry<EventFilter>>[
+                  _buildMenuItem(EventFilter.upcoming, 'Upcoming'),
+                  _buildMenuItem(EventFilter.hosting, 'Hosting'),
+                  _buildMenuItem(EventFilter.attending, 'Attending'),
+                ],
+          ),
+        ),
+
+        // title: Text("SuperPlan", style: TextStyle(fontWeight: FontWeight.w600)),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 20),
@@ -246,8 +323,8 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "Upcoming Events",
+                      Text(
+                        "${_currentFilter.name[0].toUpperCase() + _currentFilter.name.substring(1)} Events",
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
