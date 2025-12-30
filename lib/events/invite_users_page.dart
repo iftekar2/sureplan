@@ -53,7 +53,6 @@ class _InviteUsersPageState extends State<InviteUsersPage> {
           backgroundColor: Colors.green,
         ),
       );
-      // Remove from list or disable button? For now just show success.
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -76,6 +75,7 @@ class _InviteUsersPageState extends State<InviteUsersPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
+
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20.0),

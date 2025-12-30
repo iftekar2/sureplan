@@ -16,9 +16,11 @@ class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 0;
 
   late final List<Key> _pageKeys = [UniqueKey(), UniqueKey(), UniqueKey()];
+
   late final List<Widget> _pages = [
     HomePage(key: _pageKeys[0]),
     InvitationsPage(key: _pageKeys[1]),
+    //SearchEvent(key: _pageKeys[2]),
     IdeaPage(key: _pageKeys[2]),
   ];
 
@@ -69,8 +71,6 @@ class _MainScaffoldState extends State<MainScaffold> {
             value: currentUserId,
           ),
           callback: (payload) {
-            // When user responds to an invite, refresh the HomePage
-            print('DEBUG: Invite status updated: ${payload.newRecord}');
             setState(() {
               _pageKeys[0] = UniqueKey();
               _pages[0] = HomePage(key: _pageKeys[0]);
@@ -87,6 +87,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         _pages[0] = HomePage(key: _pageKeys[0]);
         _pages[1] = InvitationsPage(key: _pageKeys[1]);
         _pages[2] = IdeaPage(key: _pageKeys[2]);
+        //_pages[3] = SearchEvent(key: _pageKeys[3]);
       });
     }
 
@@ -101,8 +102,8 @@ class _MainScaffoldState extends State<MainScaffold> {
       body: IndexedStack(index: _selectedIndex, children: _pages),
 
       bottomNavigationBar: BottomNavigationBar(
-        selectedLabelStyle: TextStyle(color: Colors.black, fontSize: 14),
-        unselectedLabelStyle: TextStyle(color: Colors.black, fontSize: 12),
+        selectedLabelStyle: TextStyle(color: Colors.black, fontSize: 16),
+        unselectedLabelStyle: TextStyle(color: Colors.black, fontSize: 14),
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
         backgroundColor: Colors.white,
@@ -110,7 +111,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
 
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home, size: 35),
             label: 'Home',
@@ -118,9 +119,18 @@ class _MainScaffoldState extends State<MainScaffold> {
 
           BottomNavigationBarItem(
             icon: Icon(Icons.email, size: 35),
-            label: 'Email',
+            label: 'Invites',
           ),
 
+          // BottomNavigationBarItem(
+          //   icon: Image.network(
+          //     "https://img.icons8.com/?size=100&id=4CcGKQk6u4O0&format=png&color=000000",
+          //     width: 30,
+          //     height: 30,
+          //     color: _selectedIndex == 2 ? Colors.black : Colors.grey,
+          //   ),
+          //   label: 'Search',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.lightbulb_outline, size: 35),
             label: 'Ideas',
