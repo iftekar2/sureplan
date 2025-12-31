@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:sureplan/auto_cancel/auto_cancel_page.dart';
 import 'package:sureplan/events/select_invitees_page.dart';
 import 'package:sureplan/models/user_profile.dart';
 import 'package:sureplan/services/event_service.dart';
@@ -791,8 +792,50 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       ),
                     ),
 
-                    SizedBox(height: 40),
+                    SizedBox(height: 20),
+                    TextButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AutoCancelPage(),
+                        ),
+                      ),
 
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.6),
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: Colors.white),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.network(
+                              "https://img.icons8.com/?size=100&id=39009&format=png&color=000000",
+                              width: 30,
+                              height: 30,
+                              color: Colors.white,
+                            ),
+
+                            SizedBox(width: 15),
+
+                            Text(
+                              "Enable Auto Cancel",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 40),
                     // Create button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
