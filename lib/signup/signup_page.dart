@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sureplan/auth/auth_gate.dart';
 import 'package:sureplan/auth/auth_service.dart';
 import 'package:sureplan/auth/google_service.dart';
+import 'package:sureplan/auth/apple_service.dart';
 import 'package:sureplan/login/login_page.dart';
 import 'package:sureplan/main.dart';
 import 'package:sureplan/signup/confirm_email_page.dart';
@@ -153,6 +154,40 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
+  // Apple Sign-In button pressed
+  void signupWithApple() async {
+    setState(() => _isLoading = true);
+    try {
+      await AppleService.signUpWithApple(supabase);
+
+      // Check if widget is still mounted before navigation
+      if (!mounted) return;
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const AuthGate()),
+        (route) => false,
+      );
+    } catch (e) {
+      // Check if widget is still mounted before showing error
+      if (!mounted) return;
+
+      // Extract clean error message
+      String errorMessage = e.toString();
+      if (errorMessage.startsWith('Exception: ')) {
+        errorMessage = errorMessage.substring('Exception: '.length);
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -257,6 +292,7 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 2.0,
                                 ),
                               ),
+
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                                 borderSide: const BorderSide(
@@ -264,6 +300,7 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 2.0,
                                 ),
                               ),
+
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                                 borderSide: const BorderSide(
@@ -271,21 +308,25 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 2.0,
                                 ),
                               ),
+
                               label: const Text("Username"),
                               labelStyle: const TextStyle(
                                 fontSize: 20,
                                 color: Color.fromARGB(255, 119, 119, 119),
                                 fontWeight: FontWeight.w500,
                               ),
+
                               floatingLabelStyle: const TextStyle(
                                 fontSize: 25,
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
                               ),
+
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 16,
                                 horizontal: 12,
                               ),
+
                               errorStyle: const TextStyle(
                                 fontSize: 14,
                                 height: 1.5,
@@ -293,6 +334,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             style: const TextStyle(fontSize: 20),
                           ),
+
                           const SizedBox(height: 25),
                           TextFormField(
                             controller: _passwordController,
@@ -307,6 +349,7 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 2.0,
                                 ),
                               ),
+
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                                 borderSide: const BorderSide(
@@ -314,6 +357,7 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 2.0,
                                 ),
                               ),
+
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                                 borderSide: const BorderSide(
@@ -321,21 +365,25 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 2.0,
                                 ),
                               ),
+
                               label: const Text("Password"),
                               labelStyle: const TextStyle(
                                 fontSize: 20,
                                 color: Color.fromARGB(255, 119, 119, 119),
                                 fontWeight: FontWeight.w500,
                               ),
+
                               floatingLabelStyle: const TextStyle(
                                 fontSize: 25,
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
                               ),
+
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 16,
                                 horizontal: 12,
                               ),
+
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   _passwordVisible
@@ -348,11 +396,13 @@ class _SignupPageState extends State<SignupPage> {
                                   });
                                 },
                               ),
+
                               errorStyle: const TextStyle(
                                 fontSize: 14,
                                 height: 1.5,
                               ),
                             ),
+
                             style: const TextStyle(fontSize: 18),
                           ),
 
@@ -447,7 +497,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
 
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 20),
                           const Row(
                             children: [
                               Expanded(
@@ -457,6 +507,7 @@ class _SignupPageState extends State<SignupPage> {
                                   thickness: 1,
                                 ),
                               ),
+
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
@@ -467,6 +518,7 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                                 ),
                               ),
+
                               Expanded(
                                 child: Divider(
                                   color: Colors.grey,
@@ -477,48 +529,71 @@ class _SignupPageState extends State<SignupPage> {
                             ],
                           ),
 
-                          const SizedBox(height: 10),
-                          SizedBox(
-                            height: 70,
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  side: BorderSide(
-                                    color: Colors.grey,
-                                    width: 1,
-                                  ),
-                                ),
-                              ),
+                          // const SizedBox(height: 10),
 
-                              onPressed: signupWithGoogle,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    "lib/login/google-logo.png",
-                                    height: 40,
-                                    width: 40,
-                                  ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     SizedBox(
+                          //       height: 70,
+                          //       child: ElevatedButton(
+                          //         style: ElevatedButton.styleFrom(
+                          //           backgroundColor: Colors.white,
+                          //           elevation: 0,
+                          //           shape: RoundedRectangleBorder(
+                          //             borderRadius: BorderRadius.circular(10),
+                          //             side: const BorderSide(
+                          //               color: Colors.grey,
+                          //               width: 1,
+                          //             ),
+                          //           ),
+                          //         ),
+                          //         onPressed: signupWithApple,
 
-                                  const SizedBox(width: 10),
+                          //         child: Row(
+                          //           mainAxisAlignment: MainAxisAlignment.center,
+                          //           children: [
+                          //             Image.network(
+                          //               "https://img.icons8.com/?size=100&id=30840&format=png&color=000000",
+                          //               height: 40,
+                          //               width: 40,
+                          //             ),
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ),
 
-                                  const Text(
-                                    "Sign up with Google",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          //     SizedBox(width: 20),
+                          //     SizedBox(
+                          //       height: 70,
+                          //       child: ElevatedButton(
+                          //         style: ElevatedButton.styleFrom(
+                          //           backgroundColor: Colors.white,
+                          //           elevation: 0,
+                          //           shape: RoundedRectangleBorder(
+                          //             borderRadius: BorderRadius.circular(10),
+                          //             side: BorderSide(
+                          //               color: Colors.grey,
+                          //               width: 1,
+                          //             ),
+                          //           ),
+                          //         ),
 
+                          //         onPressed: signupWithGoogle,
+                          //         child: Row(
+                          //           mainAxisAlignment: MainAxisAlignment.center,
+                          //           children: [
+                          //             Image.asset(
+                          //               "lib/login/google-logo.png",
+                          //               height: 40,
+                          //               width: 40,
+                          //             ),
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,

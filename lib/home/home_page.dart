@@ -321,31 +321,34 @@ class _HomePageState extends State<HomePage> {
                   ),
 
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "${_currentFilter.name[0].toUpperCase() + _currentFilter.name.substring(1)} Events",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      // Text(
+                      //   "${_currentFilter.name[0].toUpperCase() + _currentFilter.name.substring(1)} Events",
+                      //   style: TextStyle(
+                      //     fontSize: 24,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
+                      const Spacer(),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.add_circle,
+                            size: 40,
+                            color: Colors.black,
+                          ),
 
-                      IconButton(
-                        icon: const Icon(
-                          Icons.add_circle,
-                          size: 40,
-                          color: Colors.black,
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CreateEventPage(),
+                              ),
+                            );
+                            if (result == true) _refreshEvents();
+                          },
                         ),
-                        onPressed: () async {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CreateEventPage(),
-                            ),
-                          );
-                          if (result == true) _refreshEvents();
-                        },
                       ),
                     ],
                   ),

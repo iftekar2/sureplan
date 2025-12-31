@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+/Users/iftekarhossain/Documents/sureplan/ios/Runner/AuthKey_MF92YJ7T7C.p8
