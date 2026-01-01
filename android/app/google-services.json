@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "326677884106",
+    "project_id": "sureplan-91710",
+    "storage_bucket": "sureplan-91710.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326677884106:android:a2a3728f1439fe96381833",
+        "android_client_info": {
+          "package_name": "com.example.sureplan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5uqB5psFbJx2casbvcB-sSssap0Y5cdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

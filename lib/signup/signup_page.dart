@@ -529,71 +529,72 @@ class _SignupPageState extends State<SignupPage> {
                             ],
                           ),
 
-                          // const SizedBox(height: 10),
+                          const SizedBox(height: 10),
 
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   children: [
-                          //     SizedBox(
-                          //       height: 70,
-                          //       child: ElevatedButton(
-                          //         style: ElevatedButton.styleFrom(
-                          //           backgroundColor: Colors.white,
-                          //           elevation: 0,
-                          //           shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(10),
-                          //             side: const BorderSide(
-                          //               color: Colors.grey,
-                          //               width: 1,
-                          //             ),
-                          //           ),
-                          //         ),
-                          //         onPressed: signupWithApple,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 70,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side: const BorderSide(
+                                        color: Colors.grey,
+                                        width: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: signupWithApple,
 
-                          //         child: Row(
-                          //           mainAxisAlignment: MainAxisAlignment.center,
-                          //           children: [
-                          //             Image.network(
-                          //               "https://img.icons8.com/?size=100&id=30840&format=png&color=000000",
-                          //               height: 40,
-                          //               width: 40,
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.network(
+                                        "https://img.icons8.com/?size=100&id=30840&format=png&color=000000",
+                                        height: 40,
+                                        width: 40,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
 
-                          //     SizedBox(width: 20),
-                          //     SizedBox(
-                          //       height: 70,
-                          //       child: ElevatedButton(
-                          //         style: ElevatedButton.styleFrom(
-                          //           backgroundColor: Colors.white,
-                          //           elevation: 0,
-                          //           shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(10),
-                          //             side: BorderSide(
-                          //               color: Colors.grey,
-                          //               width: 1,
-                          //             ),
-                          //           ),
-                          //         ),
+                              SizedBox(width: 20),
+                              SizedBox(
+                                height: 70,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side: BorderSide(
+                                        color: Colors.grey,
+                                        width: 1,
+                                      ),
+                                    ),
+                                  ),
 
-                          //         onPressed: signupWithGoogle,
-                          //         child: Row(
-                          //           mainAxisAlignment: MainAxisAlignment.center,
-                          //           children: [
-                          //             Image.asset(
-                          //               "lib/login/google-logo.png",
-                          //               height: 40,
-                          //               width: 40,
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
+                                  onPressed: signupWithGoogle,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        "lib/login/google-logo.png",
+                                        height: 40,
+                                        width: 40,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
                           SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,

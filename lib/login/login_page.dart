@@ -342,132 +342,132 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
 
-                    // SizedBox(height: 30),
+                    SizedBox(height: 30),
 
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     Expanded(
-                    //       child: Divider(
-                    //         color: Colors.grey,
-                    //         height: 20,
-                    //         thickness: 2,
-                    //         indent: 16,
-                    //         endIndent: 16,
-                    //       ),
-                    //     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            color: Colors.grey,
+                            height: 20,
+                            thickness: 2,
+                            indent: 16,
+                            endIndent: 16,
+                          ),
+                        ),
 
-                    //     Text(
-                    //       "Or",
-                    //       style: TextStyle(
-                    //         color: Colors.grey[500],
-                    //         fontSize: 18,
-                    //         fontWeight: FontWeight.w600,
-                    //       ),
-                    //     ),
+                        Text(
+                          "Or",
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
 
-                    //     Expanded(
-                    //       child: Divider(
-                    //         color: Colors.grey,
-                    //         height: 20,
-                    //         thickness: 2,
-                    //         indent: 16,
-                    //         endIndent: 16,
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
+                        Expanded(
+                          child: Divider(
+                            color: Colors.grey,
+                            height: 20,
+                            thickness: 2,
+                            indent: 16,
+                            endIndent: 16,
+                          ),
+                        ),
+                      ],
+                    ),
 
-                    // SizedBox(height: 20),
+                    SizedBox(height: 20),
 
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     SizedBox(
-                    //       height: 70,
-                    //       child: ElevatedButton(
-                    //         style: ElevatedButton.styleFrom(
-                    //           backgroundColor: Colors.white,
-                    //           elevation: 0,
-                    //           shape: RoundedRectangleBorder(
-                    //             borderRadius: BorderRadius.circular(10),
-                    //             side: BorderSide(color: Colors.grey, width: 1),
-                    //           ),
-                    //         ),
-                    //         onPressed: _loginWithApple,
-                    //         child: Row(
-                    //           mainAxisAlignment: MainAxisAlignment.center,
-                    //           children: [
-                    //             Image.network(
-                    //               "https://img.icons8.com/?size=100&id=30840&format=png&color=000000",
-                    //               height: 40,
-                    //               width: 40,
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 70,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(color: Colors.grey, width: 1),
+                              ),
+                            ),
+                            onPressed: _loginWithApple,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.network(
+                                  "https://img.icons8.com/?size=100&id=30840&format=png&color=000000",
+                                  height: 40,
+                                  width: 40,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
 
-                    //     SizedBox(width: 20),
+                        SizedBox(width: 20),
 
-                    //     SizedBox(
-                    //       height: 70,
-                    //       child: ElevatedButton(
-                    //         style: ElevatedButton.styleFrom(
-                    //           backgroundColor: Colors.white,
-                    //           elevation: 0,
-                    //           shape: RoundedRectangleBorder(
-                    //             borderRadius: BorderRadius.circular(10),
-                    //             side: BorderSide(color: Colors.grey, width: 1),
-                    //           ),
-                    //         ),
+                        SizedBox(
+                          height: 70,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(color: Colors.grey, width: 1),
+                              ),
+                            ),
 
-                    //         onPressed: () async {
-                    //           setState(() => _isLoading = true);
-                    //           try {
-                    //             await GoogleService.signInWithGoogle(supabase);
+                            onPressed: () async {
+                              setState(() => _isLoading = true);
+                              try {
+                                await GoogleService.signInWithGoogle(supabase);
 
-                    //             if (mounted) {
-                    //               Navigator.pushAndRemoveUntil(
-                    //                 context,
-                    //                 MaterialPageRoute(
-                    //                   builder: (context) => const HomePage(),
-                    //                 ),
-                    //                 (route) => false,
-                    //               );
-                    //             }
-                    //           } catch (e) {
-                    //             if (mounted) {
-                    //               ScaffoldMessenger.of(context).showSnackBar(
-                    //                 SnackBar(
-                    //                   content: Text(
-                    //                     'Google Sign-in failed: $e',
-                    //                   ),
-                    //                   backgroundColor: Colors.red,
-                    //                 ),
-                    //               );
-                    //             }
-                    //           } finally {
-                    //             if (mounted) {
-                    //               setState(() => _isLoading = false);
-                    //             }
-                    //           }
-                    //         },
+                                if (mounted) {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const HomePage(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                }
+                              } catch (e) {
+                                if (mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Google Sign-in failed: $e',
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              } finally {
+                                if (mounted) {
+                                  setState(() => _isLoading = false);
+                                }
+                              }
+                            },
 
-                    //         child: Column(
-                    //           mainAxisAlignment: MainAxisAlignment.center,
-                    //           children: [
-                    //             Image.asset(
-                    //               "lib/login/google-logo.png",
-                    //               height: 40,
-                    //               width: 40,
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  "lib/login/google-logo.png",
+                                  height: 40,
+                                  width: 40,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
