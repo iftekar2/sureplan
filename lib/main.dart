@@ -29,6 +29,7 @@ void main() async {
 }
 
 final supabase = Supabase.instance.client;
+final messengerKey = GlobalKey<ScaffoldMessengerState>();
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -68,9 +69,9 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.onMessageOpenedApp.listen((payload) {
       final notification = payload.notification;
       if (notification != null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("New Event Invitation")));
+        messengerKey.currentState?.showSnackBar(
+          SnackBar(content: Text("New Event Invitation")),
+        );
       }
     });
 
@@ -79,17 +80,32 @@ class _MyAppState extends State<MyApp> {
       RemoteNotification? notification = message.notification;
 
       if (notification != null) {
+        // We show a SnackBar instead of a system notification to avoid duplicates
+        // while the app is already in the foreground.
+        messengerKey.currentState?.showSnackBar(
+          SnackBar(
+            content: Text(notification.title ?? "New Event Invitation"),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+
+        /*
         Notificationservice().showNotification(
           id: message.messageId ?? notification.hashCode.toString(),
           title: notification.title ?? "New Event Invitation",
           body: notification.body ?? "You have been invited to a new event!",
         );
+        */
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: AuthGate());
+    return MaterialApp(
+      scaffoldMessengerKey: messengerKey,
+      debugShowCheckedModeBanner: false,
+      home: AuthGate(),
+    );
   }
 }

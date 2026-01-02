@@ -118,9 +118,9 @@ class _InviteUsersPageState extends State<InviteUsersPage> {
                         final user = _searchResults[index];
                         return ListTile(
                           leading: CircleAvatar(
-                            child: Text(user.username[0].toUpperCase()),
                             backgroundColor: Colors.grey[200],
                             foregroundColor: Colors.black,
+                            child: Text(user.username[0].toUpperCase()),
                           ),
                           title: Text(user.username),
                           subtitle: Text(user.email),

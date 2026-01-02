@@ -29,7 +29,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   @override
   void initState() {
     super.initState();
-    _setupInviteListener();
+    // _setupInviteListener();
   }
 
   @override
@@ -38,47 +38,47 @@ class _MainScaffoldState extends State<MainScaffold> {
     super.dispose();
   }
 
-  void _setupInviteListener() {
-    final currentUserId = Supabase.instance.client.auth.currentUser?.id;
-    if (currentUserId == null) return;
+  // void _setupInviteListener() {
+  //   final currentUserId = Supabase.instance.client.auth.currentUser?.id;
+  //   if (currentUserId == null) return;
 
-    _inviteChannel = Supabase.instance.client
-        .channel('public:event_invites')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.insert,
-          schema: 'public',
-          table: 'event_invites',
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'invitee_id',
-            value: currentUserId,
-          ),
-          callback: (payload) {
-            Notificationservice().showNotification(
-              id: payload.newRecord['id'].toString(),
-              title: 'New Event Invitation',
-              body: 'You have been invited to a new event!',
-            );
-          },
-        )
-        .onPostgresChanges(
-          event: PostgresChangeEvent.update,
-          schema: 'public',
-          table: 'event_invites',
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'invitee_id',
-            value: currentUserId,
-          ),
-          callback: (payload) {
-            setState(() {
-              _pageKeys[0] = UniqueKey();
-              _pages[0] = HomePage(key: _pageKeys[0]);
-            });
-          },
-        )
-        .subscribe();
-  }
+  //   _inviteChannel = Supabase.instance.client
+  //       .channel('public:event_invites')
+  //       .onPostgresChanges(
+  //         event: PostgresChangeEvent.insert,
+  //         schema: 'public',
+  //         table: 'event_invites',
+  //         filter: PostgresChangeFilter(
+  //           type: PostgresChangeFilterType.eq,
+  //           column: 'invitee_id',
+  //           value: currentUserId,
+  //         ),
+  //         callback: (payload) {
+  //           Notificationservice().showNotification(
+  //             id: payload.newRecord['id'].toString(),
+  //             title: 'New Event Invitation',
+  //             body: 'You have been invited to a new event!',
+  //           );
+  //         },
+  //       )
+  //       .onPostgresChanges(
+  //         event: PostgresChangeEvent.update,
+  //         schema: 'public',
+  //         table: 'event_invites',
+  //         filter: PostgresChangeFilter(
+  //           type: PostgresChangeFilterType.eq,
+  //           column: 'invitee_id',
+  //           value: currentUserId,
+  //         ),
+  //         callback: (payload) {
+  //           setState(() {
+  //             _pageKeys[0] = UniqueKey();
+  //             _pages[0] = HomePage(key: _pageKeys[0]);
+  //           });
+  //         },
+  //       )
+  //       .subscribe();
+  // }
 
   void _onItemTapped(int index) {
     if (index == _selectedIndex) {

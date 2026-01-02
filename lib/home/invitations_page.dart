@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:sureplan/models/invite.dart';
 import 'package:sureplan/services/invite_service.dart';
@@ -14,11 +15,54 @@ class _InvitationsPageState extends State<InvitationsPage> {
   final _inviteService = InviteService();
   bool _isLoading = true;
   List<Invite> _invites = [];
+  RealtimeChannel? _inviteChannel;
 
   @override
   void initState() {
     super.initState();
     _loadInvites();
+    _setupInviteListener();
+  }
+
+  @override
+  void dispose() {
+    _inviteChannel?.unsubscribe();
+    super.dispose();
+  }
+
+  void _setupInviteListener() {
+    final client = Supabase.instance.client;
+    final currentUserId = client.auth.currentUser?.id;
+    if (currentUserId == null) return;
+
+    print(
+      'DEBUG: Setting up Invites Realtime listener for user: $currentUserId',
+    );
+
+    _inviteChannel = client
+        .channel('public:event_invites_updates')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'event_invites',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'invitee_id',
+            value: currentUserId,
+          ),
+          callback: (payload) {
+            print(
+              'DEBUG: Realtime event received in InvitationsPage: ${payload.eventType}',
+            );
+            _loadInvites();
+          },
+        )
+        .subscribe((status, [error]) {
+          print('DEBUG: Invites Realtime status: $status');
+          if (error != null) {
+            print('DEBUG: Invites Realtime error: $error');
+          }
+        });
   }
 
   Future<void> _loadInvites() async {
@@ -210,6 +254,7 @@ class _InvitationsPageState extends State<InvitationsPage> {
                           children: [
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(horizontal: 12),
                                 backgroundColor: Colors.white,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
@@ -217,6 +262,7 @@ class _InvitationsPageState extends State<InvitationsPage> {
                                   side: BorderSide(color: Colors.grey[400]!),
                                 ),
                               ),
+
                               onPressed: () => _respond(invite.id, 'not_going'),
                               child: Text(
                                 'Decline',
@@ -261,6 +307,7 @@ class _InvitationsPageState extends State<InvitationsPage> {
                                   side: BorderSide(color: Colors.grey[400]!),
                                 ),
                               ),
+
                               onPressed: () => _respond(invite.id, 'going'),
                               child: Text(
                                 'Accept',

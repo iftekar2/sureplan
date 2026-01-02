@@ -21,11 +21,63 @@ class _HomePageState extends State<HomePage> {
   final EventService _eventService = EventService();
   late Future<List<Event>> _eventsFuture;
   final supabase = Supabase.instance.client;
+  RealtimeChannel? _homeChannel;
 
   @override
   void initState() {
     super.initState();
     _refreshEvents();
+    _setupRealtimeListener();
+  }
+
+  @override
+  void dispose() {
+    _homeChannel?.unsubscribe();
+    super.dispose();
+  }
+
+  void _setupRealtimeListener() {
+    final currentUserId = supabase.auth.currentUser?.id;
+    if (currentUserId == null) return;
+
+    print('DEBUG: Setting up Home Realtime listener for user: $currentUserId');
+
+    _homeChannel = supabase
+        .channel('public:home_page_updates')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'event_invites',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'invitee_id',
+            value: currentUserId,
+          ),
+          callback: (payload) {
+            print('DEBUG: Realtime invite change in HomePage: ${payload.eventType}');
+            _refreshEvents();
+          },
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'events',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'created_by',
+            value: currentUserId,
+          ),
+          callback: (payload) {
+            print('DEBUG: Realtime event change in HomePage: ${payload.eventType}');
+            _refreshEvents();
+          },
+        )
+        .subscribe((status, [error]) {
+          print('DEBUG: Home Realtime status: $status');
+          if (error != null) {
+            print('DEBUG: Home Realtime error: $error');
+          }
+        });
   }
 
   void _refreshEvents() {
