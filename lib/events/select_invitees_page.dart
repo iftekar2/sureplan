@@ -150,7 +150,7 @@ class _SelectInviteesPageState extends State<SelectInviteesPage> {
                             ),
                           ),
                           title: Text(user.username),
-                          subtitle: Text(user.email),
+                          //subtitle: Text(user.email),
                           trailing: Checkbox(
                             value: isSelected,
                             activeColor: Colors.black,
