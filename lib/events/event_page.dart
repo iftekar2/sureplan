@@ -276,6 +276,13 @@ class _EventPageState extends State<EventPage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserId = _auth.user?.id;
+    final isHost = _event.createdBy.id == currentUserId;
+    final myInvite =
+        _attendees.where((a) => a.inviteeId == currentUserId).isNotEmpty
+        ? _attendees.firstWhere((a) => a.inviteeId == currentUserId)
+        : null;
+
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, _hasUpdates);
@@ -496,293 +503,258 @@ class _EventPageState extends State<EventPage> {
                             ),
                           ),
 
-                          SizedBox(height: 30),
-
-                          Container(
-                            width: double.infinity,
-                            height: 60,
-
-                            decoration: BoxDecoration(
-                              color: Color(0xFF0887ff),
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(color: Colors.white),
-                            ),
-
-                            child: TextButton(
-                              onPressed: _attendEvent,
-                              child: Text(
-                                "Attend Event",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                          if (!isHost && myInvite?.status != 'going') ...[
+                            SizedBox(height: 30),
+                            Container(
+                              width: double.infinity,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF0887ff),
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(color: Colors.white),
+                              ),
+                              child: TextButton(
+                                onPressed: _attendEvent,
+                                child: const Text(
+                                  "Attend Event",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ],
 
                         if (_attendees.isNotEmpty) ...[
                           SizedBox(height: 10),
-                          Builder(
-                            builder: (context) {
-                              final currentUserId = _auth.user?.id;
-                              final myInvite =
-                                  _attendees
-                                      .where(
-                                        (a) => a.inviteeId == currentUserId,
-                                      )
-                                      .isNotEmpty
-                                  ? _attendees.firstWhere(
-                                      (a) => a.inviteeId == currentUserId,
-                                    )
-                                  : null;
+                          Container(
+                            height: 180,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.6),
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(color: Colors.white),
+                            ),
 
-                              return Container(
-                                height: 180,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.6),
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(color: Colors.white),
-                                ),
-
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    top: 10,
-                                    left: 20,
-                                    right: 20,
-                                    bottom: 10,
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                top: 10,
+                                left: 20,
+                                right: 20,
+                                bottom: 10,
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Invite Status',
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                  child: Column(
+
+                                  SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        'Invite Status',
-                                        style: TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
+                                      GestureDetector(
+                                        onTap: myInvite != null
+                                            ? () =>
+                                                  _respond(myInvite.id, 'going')
+                                            : null,
+                                        child: Container(
+                                          width: 100,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            color: myInvite?.status == 'going'
+                                                ? Colors.green.withValues(
+                                                    alpha: 0.1,
+                                                  )
+                                                : null,
+                                            border: Border.all(
+                                              color: myInvite?.status == 'going'
+                                                  ? Colors.green
+                                                  : Colors.grey,
+                                              width: myInvite?.status == 'going'
+                                                  ? 2
+                                                  : 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
+
+                                          child: Column(
+                                            children: [
+                                              SizedBox(height: 5),
+                                              Icon(
+                                                Icons.check_circle,
+                                                color: Colors.green,
+                                                size: 30,
+                                              ),
+
+                                              SizedBox(height: 5),
+                                              Text(
+                                                'Going',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+
+                                              SizedBox(height: 3),
+                                              Text(
+                                                "${_attendees.where((a) => a.status == 'going').length}",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
 
-                                      SizedBox(height: 10),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: myInvite != null
-                                                ? () => _respond(
-                                                    myInvite.id,
-                                                    'going',
+                                      GestureDetector(
+                                        onTap: myInvite != null
+                                            ? () => _respond(
+                                                myInvite.id,
+                                                'not_going',
+                                              )
+                                            : null,
+                                        child: Container(
+                                          width: 100,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                myInvite?.status == 'not_going'
+                                                ? Colors.red.withValues(
+                                                    alpha: 0.1,
                                                   )
                                                 : null,
-                                            child: Container(
-                                              width: 100,
-                                              height: 100,
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    myInvite?.status == 'going'
-                                                    ? Colors.green.withValues(
-                                                        alpha: 0.1,
-                                                      )
-                                                    : null,
-                                                border: Border.all(
-                                                  color:
-                                                      myInvite?.status ==
-                                                          'going'
-                                                      ? Colors.green
-                                                      : Colors.grey,
-                                                  width:
-                                                      myInvite?.status ==
-                                                          'going'
-                                                      ? 2
-                                                      : 1,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(height: 5),
-                                                  Icon(
-                                                    Icons.check_circle,
-                                                    color: Colors.green,
-                                                    size: 30,
-                                                  ),
-
-                                                  SizedBox(height: 5),
-                                                  Text(
-                                                    'Going',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.green,
-                                                    ),
-                                                  ),
-
-                                                  SizedBox(height: 3),
-                                                  Text(
-                                                    "${_attendees.where((a) => a.status == 'going').length}",
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.green,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                            border: Border.all(
+                                              color:
+                                                  myInvite?.status ==
+                                                      'not_going'
+                                                  ? Colors.red
+                                                  : Colors.grey,
+                                              width:
+                                                  myInvite?.status ==
+                                                      'not_going'
+                                                  ? 2
+                                                  : 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
                                             ),
                                           ),
 
-                                          GestureDetector(
-                                            onTap: myInvite != null
-                                                ? () => _respond(
-                                                    myInvite.id,
-                                                    'not_going',
+                                          child: Column(
+                                            children: [
+                                              SizedBox(height: 5),
+                                              Icon(
+                                                Icons.remove_circle,
+                                                color: Colors.red,
+                                                size: 30,
+                                              ),
+
+                                              SizedBox(height: 5),
+                                              Text(
+                                                'Not Going',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+
+                                              SizedBox(height: 3),
+                                              Text(
+                                                "${_attendees.where((a) => a.status == 'not_going').length}",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+
+                                      GestureDetector(
+                                        onTap: myInvite != null
+                                            ? () =>
+                                                  _respond(myInvite.id, 'maybe')
+                                            : null,
+                                        child: Container(
+                                          width: 100,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            color: myInvite?.status == 'maybe'
+                                                ? Colors.blue.withValues(
+                                                    alpha: 0.1,
                                                   )
                                                 : null,
-                                            child: Container(
-                                              width: 100,
-                                              height: 100,
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    myInvite?.status ==
-                                                        'not_going'
-                                                    ? Colors.red.withValues(
-                                                        alpha: 0.1,
-                                                      )
-                                                    : null,
-                                                border: Border.all(
-                                                  color:
-                                                      myInvite?.status ==
-                                                          'not_going'
-                                                      ? Colors.red
-                                                      : Colors.grey,
-                                                  width:
-                                                      myInvite?.status ==
-                                                          'not_going'
-                                                      ? 2
-                                                      : 1,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(height: 5),
-                                                  Icon(
-                                                    Icons.remove_circle,
-                                                    color: Colors.red,
-                                                    size: 30,
-                                                  ),
-
-                                                  SizedBox(height: 5),
-                                                  Text(
-                                                    'Not Going',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
-
-                                                  SizedBox(height: 3),
-                                                  Text(
-                                                    "${_attendees.where((a) => a.status == 'not_going').length}",
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                            border: Border.all(
+                                              color: myInvite?.status == 'maybe'
+                                                  ? Colors.blue
+                                                  : Colors.grey,
+                                              width: myInvite?.status == 'maybe'
+                                                  ? 2
+                                                  : 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
                                             ),
                                           ),
 
-                                          GestureDetector(
-                                            onTap: myInvite != null
-                                                ? () => _respond(
-                                                    myInvite.id,
-                                                    'maybe',
-                                                  )
-                                                : null,
-                                            child: Container(
-                                              width: 100,
-                                              height: 100,
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    myInvite?.status == 'maybe'
-                                                    ? Colors.blue.withValues(
-                                                        alpha: 0.1,
-                                                      )
-                                                    : null,
-                                                border: Border.all(
-                                                  color:
-                                                      myInvite?.status ==
-                                                          'maybe'
-                                                      ? Colors.blue
-                                                      : Colors.grey,
-                                                  width:
-                                                      myInvite?.status ==
-                                                          'maybe'
-                                                      ? 2
-                                                      : 1,
+                                          child: Column(
+                                            children: [
+                                              SizedBox(height: 5),
+                                              Icon(
+                                                Icons.question_mark,
+                                                color: Colors.blue,
+                                                size: 30,
+                                              ),
+
+                                              SizedBox(height: 5),
+                                              Text(
+                                                'Maybe',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.blue,
                                                 ),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
                                               ),
 
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(height: 5),
-                                                  Icon(
-                                                    Icons.question_mark,
-                                                    color: Colors.blue,
-                                                    size: 30,
-                                                  ),
-
-                                                  SizedBox(height: 5),
-                                                  Text(
-                                                    'Maybe',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.blue,
-                                                    ),
-                                                  ),
-
-                                                  SizedBox(height: 3),
-                                                  Text(
-                                                    "${_attendees.where((a) => a.status == 'maybe').length}",
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.blue,
-                                                    ),
-                                                  ),
-                                                ],
+                                              SizedBox(height: 3),
+                                              Text(
+                                                "${_attendees.where((a) => a.status == 'maybe').length}",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.blue,
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              );
-                            },
+                                ],
+                              ),
+                            ),
                           ),
                         ],
 

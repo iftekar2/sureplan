@@ -147,7 +147,10 @@ class EventService {
 
   /// Get upcoming events (future events only)
   Future<List<Event>> getUpcomingEvents() async {
-    final now = DateTime.now().toIso8601String();
+    // Use UTC for comparison with database and add a 3-hour grace period
+    // so that ongoing events don't immediately vanish.
+    final now = DateTime.now().toUtc();
+    final graceTime = now.subtract(const Duration(hours: 3)).toIso8601String();
     final userId = _supabase.auth.currentUser?.id;
 
     if (userId == null) return [];
@@ -157,7 +160,7 @@ class EventService {
         .from('events')
         .select('*, user_profiles(username)')
         .eq('created_by', userId)
-        .gte('date_time', now)
+        .gte('date_time', graceTime)
         .order('date_time', ascending: true);
 
     final createdEvents = (createdResponse as List).map((json) {
@@ -178,10 +181,8 @@ class EventService {
         .neq('status', 'pending');
 
     print('DEBUG: Raw invited response: ${invitedResponse.length} records');
-    print('DEBUG: Invited response data: $invitedResponse');
 
-    final nowDateTime = DateTime.now();
-    print('DEBUG: Current time: $nowDateTime (${nowDateTime.toUtc()} UTC)');
+    final graceDateTime = DateTime.now().subtract(const Duration(hours: 3));
 
     final invitedEvents = (invitedResponse as List)
         .where((json) => json['events'] != null)
@@ -194,15 +195,9 @@ class EventService {
           eventMap['invitee_id'] = userId;
           eventMap['invitee_status'] = inviteStatus;
 
-          final event = Event.fromJson(eventMap);
-
-          print(
-            'DEBUG: Event "${event.title}" - date_time: ${event.dateTime} (${event.dateTime.toUtc()} UTC)',
-          );
-          print('DEBUG: Is after now? ${event.dateTime.isAfter(nowDateTime)}');
-          return event;
+          return Event.fromJson(eventMap);
         })
-        .where((event) => event.dateTime.isAfter(nowDateTime))
+        .where((event) => event.dateTime.isAfter(graceDateTime))
         .toList();
 
     print(
