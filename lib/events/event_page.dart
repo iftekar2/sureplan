@@ -465,68 +465,75 @@ class _EventPageState extends State<EventPage> {
                           ),
                         ],
 
-                        if (_event.is_public == true) ...[
-                          SizedBox(height: 10),
+                        SizedBox(height: 10),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: Colors.white),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                _event.is_public == true
+                                    ? "Public Event"
+                                    : "Private Event",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                ),
+                              ),
+
+                              const SizedBox(height: 5),
+                              Text(
+                                _event.is_public == true
+                                    ? "Anyone can join this event!"
+                                    : "Only invited people can join this event!",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                softWrap: true,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        if (_event.is_public == true &&
+                            !isHost &&
+                            myInvite?.status != 'going') ...[
+                          SizedBox(height: 20),
                           Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.all(20),
+                            height: 60,
                             decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.6),
+                              color: const Color(0xFF0887ff),
                               borderRadius: BorderRadius.circular(30),
                               border: Border.all(color: Colors.white),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "Public Event",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25,
-                                  ),
+                            child: TextButton(
+                              onPressed: _attendEvent,
+                              child: const Text(
+                                "Attend Event",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
-
-                                const SizedBox(height: 5),
-                                Text(
-                                  "Anyone can join this event!",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  maxLines: 2,
-                                  softWrap: true,
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-
-                          if (!isHost && myInvite?.status != 'going') ...[
-                            SizedBox(height: 30),
-                            Container(
-                              width: double.infinity,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF0887ff),
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(color: Colors.white),
-                              ),
-                              child: TextButton(
-                                onPressed: _attendEvent,
-                                child: const Text(
-                                  "Attend Event",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
                         ],
+
+                        SizedBox(height: 20),
 
                         if (_attendees.isNotEmpty) ...[
                           SizedBox(height: 10),
