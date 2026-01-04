@@ -137,17 +137,35 @@ class InviteService {
         .eq('invitee_id', currentUserId);
   }
 
-  /// Attend an evnet
+  /// Attend an event
   Future<void> attendEvent(String eventId) async {
     final currentUserId = _supabase.auth.currentUser?.id;
     if (currentUserId == null) {
       throw Exception('User must be logged in');
     }
 
-    await _supabase
+    // Check if an invite already exists for this user and event
+    final existing = await _supabase
         .from('event_invites')
-        .update({'status': 'going'})
+        .select('id')
         .eq('event_id', eventId)
-        .eq('invitee_id', currentUserId);
+        .eq('invitee_id', currentUserId)
+        .maybeSingle();
+
+    if (existing != null) {
+      // Update existing record
+      await _supabase
+          .from('event_invites')
+          .update({'status': 'going'})
+          .eq('id', existing['id']);
+    } else {
+      // Insert new record (Self-Invite)
+      await _supabase.from('event_invites').insert({
+        'event_id': eventId,
+        'inviter_id': currentUserId, // Use current user as inviter for RLS
+        'invitee_id': currentUserId,
+        'status': 'going',
+      });
+    }
   }
 }

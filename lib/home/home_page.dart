@@ -54,7 +54,9 @@ class _HomePageState extends State<HomePage> {
             value: currentUserId,
           ),
           callback: (payload) {
-            print('DEBUG: Realtime invite change in HomePage: ${payload.eventType}');
+            print(
+              'DEBUG: Realtime invite change in HomePage: ${payload.eventType}',
+            );
             _refreshEvents();
           },
         )
@@ -68,7 +70,9 @@ class _HomePageState extends State<HomePage> {
             value: currentUserId,
           ),
           callback: (payload) {
-            print('DEBUG: Realtime event change in HomePage: ${payload.eventType}');
+            print(
+              'DEBUG: Realtime event change in HomePage: ${payload.eventType}',
+            );
             _refreshEvents();
           },
         )
