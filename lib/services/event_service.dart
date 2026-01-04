@@ -12,6 +12,8 @@ class EventService {
     required String location,
     String? description,
     String? backgroundImageUrl,
+    bool? isPublic,
+    String? shortId,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
@@ -25,6 +27,8 @@ class EventService {
       'description': description,
       'background_image': backgroundImageUrl,
       'created_by': userId,
+      'is_public': isPublic,
+      'short_id': shortId,
     };
 
     print('DEBUG: Creating event with local time: $dateTime');
@@ -107,6 +111,7 @@ class EventService {
     String? location,
     String? description,
     String? backgroundImageUrl,
+    bool? isPublic,
   }) async {
     final updateData = <String, dynamic>{};
 
@@ -117,6 +122,7 @@ class EventService {
     if (backgroundImageUrl != null) {
       updateData['background_image'] = backgroundImageUrl;
     }
+    if (isPublic != null) updateData['is_public'] = isPublic;
 
     final response = await _supabase
         .from('events')

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,6 +34,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   bool _isLocationInvalid = false;
   String? _hostUsername;
   File? _imageFile;
+  bool _isPublic = false;
 
   @override
   void initState() {
@@ -156,6 +158,17 @@ class _CreateEventPageState extends State<CreateEventPage> {
     });
   }
 
+  String _generateShortId() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random();
+    return String.fromCharCodes(
+      Iterable.generate(
+        5,
+        (_) => chars.codeUnitAt(random.nextInt(chars.length)),
+      ),
+    );
+  }
+
   Future<void> _createEvent() async {
     _validate();
     if (!_formKey.currentState!.validate() ||
@@ -178,6 +191,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
         location: _locationController.text.trim(),
         description: _descriptionController.text.trim(),
         backgroundImageUrl: backgroundImageUrl,
+        isPublic: _isPublic,
+        shortId: _generateShortId(),
       );
 
       // Send invites to selected users
@@ -632,6 +647,68 @@ class _CreateEventPageState extends State<CreateEventPage> {
                             ],
                           ),
                         ),
+                      ),
+                    ),
+
+                    SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(
+                          255,
+                          0,
+                          0,
+                          0,
+                        ).withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: Colors.white),
+                      ),
+                      height: 150,
+
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  _isPublic ? "Public Event" : "Private Event",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 5),
+                                Text(
+                                  _isPublic
+                                      ? "Anyone can join this event!"
+                                      : "Only invited people can join this event!",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  maxLines: 2,
+                                  softWrap: true,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Switch(
+                            value: _isPublic,
+                            onChanged: (value) {
+                              setState(() {
+                                _isPublic = value;
+                              });
+                            },
+                            activeColor: Colors.white,
+                            activeTrackColor: Colors.blue,
+                          ),
+                        ],
                       ),
                     ),
 

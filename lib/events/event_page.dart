@@ -230,7 +230,7 @@ class _EventPageState extends State<EventPage> {
               user.username[0].toUpperCase(),
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 12,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -241,7 +241,7 @@ class _EventPageState extends State<EventPage> {
             user.username,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 16,
+              fontSize: 20,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -307,6 +307,7 @@ class _EventPageState extends State<EventPage> {
                 ),
               ),
             ),
+
             SafeArea(
               top: true,
               bottom: false,
@@ -351,7 +352,7 @@ class _EventPageState extends State<EventPage> {
                                 Text(
                                   _event.location,
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 25,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),
@@ -364,7 +365,7 @@ class _EventPageState extends State<EventPage> {
                                     'MMM d, y • h:mm a',
                                   ).format(_event.dateTime),
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),
@@ -377,7 +378,7 @@ class _EventPageState extends State<EventPage> {
                                     textAlign: TextAlign.center,
                                     _event.description!,
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.w500,
                                       color: Colors.white,
                                     ),
@@ -408,7 +409,7 @@ class _EventPageState extends State<EventPage> {
                                   child: Text(
                                     "Who's Invited?",
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 25,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
@@ -427,6 +428,45 @@ class _EventPageState extends State<EventPage> {
                                             _buildInviteeChip(invite.invitee!),
                                       )
                                       .toList(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+
+                        if (_event.is_public == true) ...[
+                          SizedBox(height: 10),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.6),
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Public Event",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 5),
+                                Text(
+                                  "Anyone can join this event!",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  maxLines: 2,
+                                  softWrap: true,
                                 ),
                               ],
                             ),
@@ -470,7 +510,7 @@ class _EventPageState extends State<EventPage> {
                                       Text(
                                         'Invite Status',
                                         style: TextStyle(
-                                          fontSize: 20,
+                                          fontSize: 25,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.white,
                                         ),

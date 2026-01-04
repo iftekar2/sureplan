@@ -146,6 +146,7 @@ class _EditEventPageState extends State<EditEventPage> {
         location: _locationController.text.trim(),
         description: _descriptionController.text.trim(),
         backgroundImageUrl: backgroundImageUrl,
+        isPublic: _event.is_public,
       );
 
       if (!mounted) return;
@@ -379,7 +380,7 @@ class _EditEventPageState extends State<EditEventPage> {
         ),
 
         title: const Text(
-          'Create Event',
+          'Edit Event',
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
 
@@ -417,6 +418,7 @@ class _EditEventPageState extends State<EditEventPage> {
               ),
             ),
           ),
+
           SafeArea(
             top: true,
             bottom: false,
@@ -649,7 +651,73 @@ class _EditEventPageState extends State<EditEventPage> {
                       ),
                     ),
 
+                    SizedBox(height: 10),
+
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(
+                          255,
+                          0,
+                          0,
+                          0,
+                        ).withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: Colors.white),
+                      ),
+                      height: 150,
+
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  (_event.is_public == true)
+                                      ? "Public Event"
+                                      : "Private Event",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 5),
+                                Text(
+                                  (_event.is_public == true)
+                                      ? "Anyone can join this event!"
+                                      : "Only invited people can join this event!",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  maxLines: 2,
+                                  softWrap: true,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Switch(
+                            value: _event.is_public ?? false,
+                            onChanged: (value) {
+                              setState(() {
+                                _event = _event.copyWith(is_public: value);
+                              });
+                            },
+                            activeColor: Colors.white,
+                            activeTrackColor: Colors.blue,
+                          ),
+                        ],
+                      ),
+                    ),
+
                     if (_attendees.isNotEmpty) ...[
+                      SizedBox(height: 10),
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.only(bottom: 20),
@@ -667,7 +735,7 @@ class _EditEventPageState extends State<EditEventPage> {
                               child: Text(
                                 "Who's Invited?",
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 25,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),

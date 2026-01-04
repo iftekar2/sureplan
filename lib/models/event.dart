@@ -25,6 +25,8 @@ class Event {
   final String? inviteeId;
   final String? inviteeStatus;
   final String? backgroundImage;
+  final bool? is_public;
+  final String? short_id;
 
   Event({
     required this.id,
@@ -39,6 +41,8 @@ class Event {
     required this.inviteeId,
     required this.inviteeStatus,
     this.backgroundImage,
+    required this.is_public,
+    required this.short_id,
   });
 
   // Create Event from JSON (from Supabase)
@@ -65,6 +69,8 @@ class Event {
       inviteeId: json['invitee_id'] as String?,
       inviteeStatus: json['invitee_status'] as String?,
       backgroundImage: json['background_image'] as String?,
+      is_public: json['is_public'] as bool?,
+      short_id: json['short_id'] as String?,
     );
   }
 
@@ -80,6 +86,8 @@ class Event {
       'invitee_id': inviteeId,
       'invitee_status': inviteeStatus,
       'background_image': backgroundImage,
+      'is_public': is_public,
+      'short_id': short_id,
     };
   }
 
@@ -97,6 +105,8 @@ class Event {
     String? inviteeId,
     String? inviteeStatus,
     String? backgroundImage,
+    bool? is_public,
+    String? short_id,
   }) {
     return Event(
       id: id ?? this.id,
@@ -111,6 +121,8 @@ class Event {
       inviteeId: inviteeId ?? this.inviteeId,
       inviteeStatus: inviteeStatus ?? this.inviteeStatus,
       backgroundImage: backgroundImage ?? this.backgroundImage,
+      is_public: is_public ?? this.is_public,
+      short_id: short_id ?? this.short_id,
     );
   }
 }
