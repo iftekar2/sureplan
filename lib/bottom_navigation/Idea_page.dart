@@ -32,7 +32,7 @@ class _IdeaPageState extends State<IdeaPage> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error fetching features: $e');
+      debugPrint('Error fetching features: $e');
       setState(() => _isLoading = false);
     }
   }

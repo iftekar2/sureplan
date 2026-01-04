@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FeatureService {
@@ -14,7 +15,7 @@ class FeatureService {
 
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
-      print('Error fetching features: $e');
+      debugPrint('Error fetching features: $e');
       throw e;
     }
   }
@@ -32,7 +33,7 @@ class FeatureService {
         'upvotes_count': 0,
       });
     } catch (e) {
-      print('Error creating feature: $e');
+      debugPrint('Error creating feature: $e');
       throw e;
     }
   }
@@ -48,39 +49,13 @@ class FeatureService {
     if (userId == null) throw Exception('User must be logged in');
 
     try {
-      if (isUpvoted) {
-        // Remove vote
-        await _supabase.from('feature_votes').delete().match({
-          'feature_id': featureId,
-          'user_id': userId,
-        });
-
-        // Decrement count (optimistic approach since we don't have triggers set up yet)
-        final newCount = currentCount > 0 ? currentCount - 1 : 0;
-        await _supabase
-            .from('feature_requests')
-            .update({'upvotes_count': newCount})
-            .eq('id', featureId);
-
-        return newCount;
-      } else {
-        // Add vote
-        await _supabase.from('feature_votes').insert({
-          'feature_id': featureId,
-          'user_id': userId,
-        });
-
-        // Increment count
-        final newCount = currentCount + 1;
-        await _supabase
-            .from('feature_requests')
-            .update({'upvotes_count': newCount})
-            .eq('id', featureId);
-
-        return newCount;
-      }
+      final response = await _supabase.rpc(
+        'toggle_feature_upvote',
+        params: {'f_id': featureId, 'u_id': userId},
+      );
+      return response as int;
     } catch (e) {
-      print('Error toggling upvote: $e');
+      debugPrint('Error toggling upvote: $e');
       throw e;
     }
   }
@@ -90,7 +65,7 @@ class FeatureService {
     try {
       await _supabase.from('feature_requests').delete().eq('id', featureId);
     } catch (e) {
-      print('Error deleting feature: $e');
+      debugPrint('Error deleting feature: $e');
       throw e;
     }
   }

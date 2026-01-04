@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sureplan/auth/auth_service.dart';
@@ -151,14 +152,14 @@ class _EventPageState extends State<EventPage> {
         return;
       }
 
-      print(
+      debugPrint(
         'DEBUG: Attempting to delete invite ${myInvite.id} for user $currentUserId',
       );
 
       // Delete the invite record
       await _inviteService.deleteInviteForSelf(myInvite.id);
 
-      print('DEBUG: Successfully deleted invite');
+      debugPrint('DEBUG: Successfully deleted invite');
 
       if (!mounted) return;
 
@@ -172,7 +173,7 @@ class _EventPageState extends State<EventPage> {
 
       Navigator.pop(context, true);
     } catch (e) {
-      print('ERROR: Failed to delete invite: $e');
+      debugPrint('ERROR: Failed to delete invite: $e');
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(

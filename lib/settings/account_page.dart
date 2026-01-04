@@ -41,7 +41,7 @@ class _AccountPageState extends State<AccountPage> {
         _isLoading = false;
       });
     } catch (e) {
-      print("Error loading notification preference: $e");
+      debugPrint("Error loading notification preference: $e");
       setState(() {
         _isLoading = false;
       });
@@ -102,7 +102,7 @@ class _AccountPageState extends State<AccountPage> {
         _email = email;
       });
     } catch (e) {
-      print("Error fetching user profile: $e");
+      debugPrint("Error fetching user profile: $e");
       setState(() {
         _username = "Error";
         _email = "Error";

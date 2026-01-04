@@ -38,7 +38,7 @@ class _ProfileState extends State<Profile> {
         });
       }
     } catch (e) {
-      print("Error fetching user profile in UI: $e");
+      debugPrint("Error fetching user profile in UI: $e");
       setState(() {
         _username = "Error";
         _email = "Error";

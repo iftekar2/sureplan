@@ -1,13 +1,14 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/foundation.dart';
+import 'package:sureplan/config.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GoogleService {
   /// Web Client ID that you registered with Google Cloud.
-  static String get webClientId => dotenv.env['SUPABASE_WEB_CLIENT_ID'] ?? '';
+  static String get webClientId => AppConfig.googleWebClientId;
 
   /// iOS Client ID that you registered with Google Cloud.
-  static String get iosClientId => dotenv.env['SUPABASE_IOS_CLIENT_ID'] ?? '';
+  static String get iosClientId => AppConfig.googleIosClientId;
 
   static bool _isInitialized = false;
 
@@ -21,26 +22,7 @@ class GoogleService {
       );
       _isInitialized = true;
     } catch (e) {
-      // If already initialized or other error
       _isInitialized = true;
-    }
-  }
-
-  /// Check if email already exists in user_profiles table
-  static Future<bool> checkEmailExists(
-    SupabaseClient supabase,
-    String email,
-  ) async {
-    try {
-      final response = await supabase
-          .from('user_profiles')
-          .select('email')
-          .eq('email', email)
-          .maybeSingle();
-
-      return response != null;
-    } catch (e) {
-      return false;
     }
   }
 
@@ -53,19 +35,6 @@ class GoogleService {
       // Authenticate with Google
       final googleUser = await googleSignIn.authenticate();
 
-      // Check if email already exists in database
-      final googleEmail = googleUser.email;
-      final emailExists = await checkEmailExists(supabase, googleEmail);
-
-      if (emailExists) {
-        // Clean up Google Sign-In session
-        await googleSignIn.disconnect();
-        throw Exception(
-          'An account with this email already exists. '
-          'Please log in with your email and password instead.',
-        );
-      }
-
       // Get the ID token from authentication
       final googleAuth = googleUser.authentication;
       final idToken = googleAuth.idToken;
@@ -74,28 +43,14 @@ class GoogleService {
         throw 'No ID Token found.';
       }
 
-      // Sign in to Supabase with the Google tokens
-      final response = await supabase.auth.signInWithIdToken(
+      // Sign in to Supabase with the Google tokens.
+      // Profile creation is handled by server triggers using Google's synced metadata.
+      return await supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
       );
-
-      // Save user profile to database
-      if (response.user != null) {
-        try {
-          await supabase.from('user_profiles').upsert({
-            'id': response.user!.id,
-            'username': googleUser.displayName ?? 'Google User',
-            'email': response.user!.email,
-            'notification': true,
-          });
-        } catch (e) {
-          print('Warning: Failed to create/update user profile: $e');
-        }
-      }
-
-      return response;
     } catch (e) {
+      debugPrint('Error signing up with Google: $e');
       rethrow;
     }
   }
@@ -118,40 +73,12 @@ class GoogleService {
       }
 
       // Sign in to Supabase with the Google tokens
-      final response = await supabase.auth.signInWithIdToken(
+      return await supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
       );
-
-      // Check if email already exists in database
-      final email = response.user!.email;
-      final emailExists = await checkEmailExists(supabase, email ?? '');
-
-      if (!emailExists) {
-        // Clean up Google Sign-In session
-        await googleSignIn.disconnect();
-        throw Exception(
-          'An account with this email does not exists. '
-          'Please sign up with your email first.',
-        );
-      }
-
-      // Save user profile to database
-      // if (response.user != null) {
-      //   try {
-      //     await supabase.from('user_profiles').upsert({
-      //       'id': response.user!.id,
-      //       'username': googleUser.displayName ?? 'Google User',
-      //       'email': response.user!.email,
-      //       'notification': true,
-      //     });
-      //   } catch (e) {
-      //     print('Warning: Failed to create/update user profile: $e');
-      //   }
-      // }
-
-      return response;
     } catch (e) {
+      debugPrint('Error signing in with Google: $e');
       rethrow;
     }
   }

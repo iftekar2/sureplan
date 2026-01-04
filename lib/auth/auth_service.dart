@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
@@ -8,17 +9,10 @@ class AuthService {
     String email,
     String password,
   ) async {
-    final response = await _supabase.auth.signInWithPassword(
+    return await _supabase.auth.signInWithPassword(
       email: email,
       password: password,
     );
-
-    // Self-healing: Ensure profile exists
-    if (response.user != null) {
-      await _ensureProfileExists(response.user!);
-    }
-
-    return response;
   }
 
   // Check if username exists
@@ -32,7 +26,6 @@ class AuthService {
 
       return response != null;
     } catch (e) {
-      // If table doesn't exist or other error, return false
       return false;
     }
   }
@@ -50,29 +43,11 @@ class AuthService {
     }
 
     // Sign up the user
-    final response = await _supabase.auth.signUp(
+    return await _supabase.auth.signUp(
       email: email,
       password: password,
       data: {'display_name': displayName},
     );
-
-    // Create user profile entry in database
-    if (response.user != null) {
-      try {
-        await _supabase.from('user_profiles').insert({
-          'id': response.user!.id,
-          'username': displayName,
-          'email': email,
-          'notification': true,
-        });
-      } catch (e) {
-        // This may fail if email confirmation is required (RLS prevents insert without session)
-        // Profile will be created in verifySignupOTP after user is authenticated
-        print('Note: Initial profile creation skipped or failed: $e');
-      }
-    }
-
-    return response;
   }
 
   // Sign out
@@ -92,45 +67,27 @@ class AuthService {
     return user?.userMetadata?['display_name'] as String?;
   }
 
-  // Check if email exists
+  // Check if email exists (Standardized to avoid explicit enumeration where possible)
   Future<bool> checkEmailExists(String email) async {
     try {
       await _supabase.auth.signInWithPassword(
         email: email,
-        password: 'dummy_password_check_12345',
+        password: 'dummy_password_check_active_security_policy',
       );
       return true;
     } catch (e) {
-      // Check the error message
       final errorMessage = e.toString().toLowerCase();
-
-      // If error contains "invalid login credentials", email exists but password is wrong
+      // Only return true if we are certain the account exists
       if (errorMessage.contains('invalid login credentials') ||
           errorMessage.contains('invalid password')) {
         return true;
       }
-
-      // If error contains "user not found" or similar, email doesn't exist
-      if (errorMessage.contains('user not found') ||
-          errorMessage.contains('email not found') ||
-          errorMessage.contains('not registered')) {
-        return false;
-      }
-
-      // For any other error, assume email doesn't exist
       return false;
     }
   }
 
   // Reset password
   Future<void> resetPassword(String email) async {
-    // First check if email exists
-    final emailExists = await checkEmailExists(email);
-
-    if (!emailExists) {
-      throw Exception('No account found with this email address.');
-    }
-
     return await _supabase.auth.resetPasswordForEmail(email);
   }
 
@@ -151,47 +108,11 @@ class AuthService {
     required String email,
     required String token,
   }) async {
-    final response = await _supabase.auth.verifyOTP(
+    return await _supabase.auth.verifyOTP(
       email: email,
       token: token,
       type: OtpType.signup,
     );
-
-    // After successful verification, the user is signed in.
-    // Ensure the user profile exists.
-    if (response.user != null) {
-      await _ensureProfileExists(response.user!);
-    }
-
-    return response;
-  }
-
-  // Ensure profile exists in database
-  Future<void> _ensureProfileExists(User user) async {
-    try {
-      final userId = user.id;
-      final displayName = user.userMetadata?['display_name'] as String?;
-      final email = user.email;
-
-      // Check if profile exists
-      final profile = await _supabase
-          .from('user_profiles')
-          .select()
-          .eq('id', userId)
-          .maybeSingle();
-
-      if (profile == null && displayName != null && email != null) {
-        await _supabase.from('user_profiles').insert({
-          'id': userId,
-          'username': displayName,
-          'email': email,
-          'notification': true,
-        });
-        print('Profile created for user: $userId');
-      }
-    } catch (e) {
-      print('Error ensuring user profile exists: $e');
-    }
   }
 
   // Resend OTP
@@ -207,16 +128,12 @@ class AuthService {
   // Get current user
   User? get user => _supabase.auth.currentUser;
 
-  // Get current user profile with self-healing
+  // Get current user profile
   Future<Map<String, dynamic>?> getCurrentUserProfile() async {
     final user = _supabase.auth.currentUser;
     if (user == null) return null;
 
     try {
-      // Ensure profile exists
-      await _ensureProfileExists(user);
-
-      // Fetch profile
       final response = await _supabase
           .from('user_profiles')
           .select()
@@ -225,7 +142,7 @@ class AuthService {
 
       return response;
     } catch (e) {
-      print('Error fetching current user profile: $e');
+      debugPrint('Error fetching current user profile: $e');
       return null;
     }
   }

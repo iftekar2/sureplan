@@ -3,3 +3,4 @@
 .temp
 .env
 20260104000000_add_rate_limiting.sql
+20260104000001_vulnerability_fixes.sql

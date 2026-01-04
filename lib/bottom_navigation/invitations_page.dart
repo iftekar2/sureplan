@@ -35,7 +35,7 @@ class _InvitationsPageState extends State<InvitationsPage> {
     final currentUserId = client.auth.currentUser?.id;
     if (currentUserId == null) return;
 
-    print(
+    debugPrint(
       'DEBUG: Setting up Invites Realtime listener for user: $currentUserId',
     );
 
@@ -51,16 +51,16 @@ class _InvitationsPageState extends State<InvitationsPage> {
             value: currentUserId,
           ),
           callback: (payload) {
-            print(
+            debugPrint(
               'DEBUG: Realtime event received in InvitationsPage: ${payload.eventType}',
             );
             _loadInvites();
           },
         )
         .subscribe((status, [error]) {
-          print('DEBUG: Invites Realtime status: $status');
+          debugPrint('DEBUG: Invites Realtime status: $status');
           if (error != null) {
-            print('DEBUG: Invites Realtime error: $error');
+            debugPrint('DEBUG: Invites Realtime error: $error');
           }
         });
   }

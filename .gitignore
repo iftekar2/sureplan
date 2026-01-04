@@ -48,3 +48,4 @@ app.*.map.json
 /ios/Runner/AuthKey_MF92YJ7T7C.p8
 
 /supabase/functions/service-account.json
+config.dart

@@ -205,7 +205,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
               inviteeId: user.id,
             );
           } catch (e) {
-            print('Failed to invite ${user.username}: $e');
+            debugPrint('Failed to invite ${user.username}: $e');
           }
         }
       }

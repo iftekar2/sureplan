@@ -1,22 +1,20 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/auth/auth_gate.dart';
 import 'package:sureplan/notification/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+import 'package:sureplan/config.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // initialize dotenv
-  await dotenv.load(fileName: ".env");
-
   // initialize supabase
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    url: AppConfig.supabaseUrl,
+    anonKey: AppConfig.supabaseAnonKey,
   );
 
   // initialize firebase

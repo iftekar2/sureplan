@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/models/event.dart';
 
@@ -37,8 +38,8 @@ class EventService {
       'short_id': shortId,
     };
 
-    print('DEBUG: Creating event with local time: $dateTime');
-    print('DEBUG: Storing as UTC: ${dateTime.toUtc()}');
+    debugPrint('DEBUG: Creating event with local time: $dateTime');
+    debugPrint('DEBUG: Storing as UTC: ${dateTime.toUtc()}');
 
     final response = await _supabase
         .from('events')
@@ -201,7 +202,7 @@ class EventService {
       return Event.fromJson(eventMap);
     }).toList();
 
-    print('DEBUG: Created events count: ${createdEvents.length}');
+    debugPrint('DEBUG: Created events count: ${createdEvents.length}');
 
     // 2. Fetch events where current user is invited and responded
     final invitedResponse = await _supabase
@@ -210,7 +211,9 @@ class EventService {
         .eq('invitee_id', userId)
         .neq('status', 'pending');
 
-    print('DEBUG: Raw invited response: ${invitedResponse.length} records');
+    debugPrint(
+      'DEBUG: Raw invited response: ${invitedResponse.length} records',
+    );
 
     final graceDateTime = DateTime.now().subtract(const Duration(hours: 3));
 
@@ -230,7 +233,7 @@ class EventService {
         .where((event) => event.dateTime.isAfter(graceDateTime))
         .toList();
 
-    print(
+    debugPrint(
       'DEBUG: Invited events count (after filtering): ${invitedEvents.length}',
     );
 
@@ -243,7 +246,7 @@ class EventService {
     // Sort by date
     uniqueEvents.sort((a, b) => a.dateTime.compareTo(b.dateTime));
 
-    print('DEBUG: Final unique events count: ${uniqueEvents.length}');
+    debugPrint('DEBUG: Final unique events count: ${uniqueEvents.length}');
 
     return uniqueEvents;
   }

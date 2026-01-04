@@ -40,7 +40,9 @@ class _HomePageState extends State<HomePage> {
     final currentUserId = supabase.auth.currentUser?.id;
     if (currentUserId == null) return;
 
-    print('DEBUG: Setting up Home Realtime listener for user: $currentUserId');
+    debugPrint(
+      'DEBUG: Setting up Home Realtime listener for user: $currentUserId',
+    );
 
     _homeChannel = supabase
         .channel('public:home_page_updates')
@@ -54,7 +56,7 @@ class _HomePageState extends State<HomePage> {
             value: currentUserId,
           ),
           callback: (payload) {
-            print(
+            debugPrint(
               'DEBUG: Realtime invite change in HomePage: ${payload.eventType}',
             );
             _refreshEvents();
@@ -70,16 +72,16 @@ class _HomePageState extends State<HomePage> {
             value: currentUserId,
           ),
           callback: (payload) {
-            print(
+            debugPrint(
               'DEBUG: Realtime event change in HomePage: ${payload.eventType}',
             );
             _refreshEvents();
           },
         )
         .subscribe((status, [error]) {
-          print('DEBUG: Home Realtime status: $status');
+          debugPrint('DEBUG: Home Realtime status: $status');
           if (error != null) {
-            print('DEBUG: Home Realtime error: $error');
+            debugPrint('DEBUG: Home Realtime error: $error');
           }
         });
   }
