@@ -257,4 +257,16 @@ class EventService {
 
     return publicUrl;
   }
+
+  /// Search events by short_id
+  Future<List<Event>> searchEventsByShortId(String shortId) async {
+    final response = await _supabase
+        .from('events')
+        .select('*, user_profiles(username)')
+        .eq('short_id', shortId.toUpperCase());
+
+    return (response as List)
+        .map((json) => Event.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
 }

@@ -58,11 +58,12 @@ class _MyAppState extends State<MyApp> {
     });
 
     FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) async {
-      if (fcmToken != null) {
+      final user = supabase.auth.currentUser;
+      if (user != null) {
         await supabase
             .from('user_profiles')
             .update({'fcm_token': fcmToken})
-            .eq('id', supabase.auth.currentUser!.id);
+            .eq('id', user.id);
       }
     });
 
@@ -75,13 +76,10 @@ class _MyAppState extends State<MyApp> {
       }
     });
 
-    // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
 
       if (notification != null) {
-        // We show a SnackBar instead of a system notification to avoid duplicates
-        // while the app is already in the foreground.
         messengerKey.currentState?.showSnackBar(
           SnackBar(
             content: Text(notification.title ?? "New Event Invitation"),
