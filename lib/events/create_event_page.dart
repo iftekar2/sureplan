@@ -800,10 +800,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           builder: (context) => AutoCancelPage(),
                         ),
                       ),
-
                       child: Container(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.only(left: 20, right: 20),
                         width: double.infinity,
+                        height: 60,
+
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.6),
                           borderRadius: BorderRadius.circular(30),
@@ -813,21 +814,27 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.network(
-                              "https://img.icons8.com/?size=100&id=39009&format=png&color=000000",
-                              width: 30,
-                              height: 30,
-                              color: Colors.white,
+                            Align(
+                              alignment: Alignment.center,
+                              child: Image.network(
+                                "https://img.icons8.com/?size=100&id=39009&format=png&color=000000",
+                                width: 25,
+                                height: 25,
+                                color: Colors.white,
+                              ),
                             ),
 
                             SizedBox(width: 15),
 
-                            Text(
-                              "Enable Auto Cancel",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                            Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Enable Auto Cancel",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ],
