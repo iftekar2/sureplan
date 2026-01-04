@@ -17,7 +17,7 @@ class _SearchEventState extends State<SearchEvent> {
   List<Event> _searchResults = [];
 
   Future<void> _search() async {
-    final query = _searchController.text.trim();
+    final query = _searchController.text.trim().toUpperCase();
     if (query.isEmpty) return;
 
     setState(() => _isLoading = true);
@@ -100,13 +100,19 @@ class _SearchEventState extends State<SearchEvent> {
                       children: [
                         Image.network(
                           "https://img.icons8.com/?size=100&id=4CcGKQk6u4O0&format=png&color=000000",
-                          width: 30,
-                          height: 30,
+                          width: 50,
+                          height: 50,
                           color: Colors.grey,
                         ),
-                        const Text(
+
+                        Text(
                           'Search for events using their 5-character ID',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ],
                     )

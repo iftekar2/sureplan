@@ -250,6 +250,30 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
+  Future<void> _attendEvent() async {
+    try {
+      await _inviteService.attendEvent(widget.event.id);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Going to event'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to respond: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -469,6 +493,31 @@ class _EventPageState extends State<EventPage> {
                                   softWrap: true,
                                 ),
                               ],
+                            ),
+                          ),
+
+                          SizedBox(height: 30),
+
+                          Container(
+                            width: double.infinity,
+                            height: 60,
+
+                            decoration: BoxDecoration(
+                              color: Color(0xFF0887ff),
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(color: Colors.white),
+                            ),
+
+                            child: TextButton(
+                              onPressed: _attendEvent,
+                              child: Text(
+                                "Attend Event",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ],

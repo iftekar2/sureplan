@@ -136,4 +136,18 @@ class InviteService {
         .eq('id', inviteId)
         .eq('invitee_id', currentUserId);
   }
+
+  /// Attend an evnet
+  Future<void> attendEvent(String eventId) async {
+    final currentUserId = _supabase.auth.currentUser?.id;
+    if (currentUserId == null) {
+      throw Exception('User must be logged in');
+    }
+
+    await _supabase
+        .from('event_invites')
+        .update({'status': 'going'})
+        .eq('event_id', eventId)
+        .eq('invitee_id', currentUserId);
+  }
 }
