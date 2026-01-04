@@ -15,6 +15,12 @@ class EventService {
     bool? isPublic,
     String? shortId,
   }) async {
+    _validateEventInput(
+      title: title,
+      location: location,
+      description: description,
+    );
+
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
       throw Exception('User must be logged in to create events');
@@ -46,6 +52,22 @@ class EventService {
     eventWithStatus['invitee_status'] = 'Hosting';
 
     return Event.fromJson(eventWithStatus);
+  }
+
+  void _validateEventInput({
+    required String title,
+    required String location,
+    String? description,
+  }) {
+    if (title.isEmpty || title.length > 100) {
+      throw Exception('Title must be between 1 and 100 characters');
+    }
+    if (location.isEmpty || location.length > 200) {
+      throw Exception('Location must be between 1 and 200 characters');
+    }
+    if (description != null && description.length > 1000) {
+      throw Exception('Description cannot exceed 1000 characters');
+    }
   }
 
   /// Get all events
@@ -113,6 +135,14 @@ class EventService {
     String? backgroundImageUrl,
     bool? isPublic,
   }) async {
+    if (title != null || location != null || description != null) {
+      _validateEventInput(
+        title: title ?? '',
+        location: location ?? '',
+        description: description,
+      );
+    }
+
     final updateData = <String, dynamic>{};
 
     if (title != null) updateData['title'] = title;

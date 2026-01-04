@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -305,7 +306,11 @@ class _EditEventPageState extends State<EditEventPage> {
                       TextField(
                         controller: _descriptionController,
                         maxLines: 6,
+                        maxLength: 1000,
                         style: const TextStyle(color: Colors.white),
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(1000),
+                        ],
 
                         decoration: InputDecoration(
                           hintText: "Tell your guests about your event.",
@@ -342,6 +347,7 @@ class _EditEventPageState extends State<EditEventPage> {
                         },
 
                         style: const TextStyle(color: Colors.white),
+                        inputFormatters: [LengthLimitingTextInputFormatter(50)],
                         decoration: InputDecoration(
                           hintText: "Ellen Sweeney",
                           filled: true,
@@ -490,6 +496,9 @@ class _EditEventPageState extends State<EditEventPage> {
                                   fontSize: _calculateFontSize(),
                                   fontWeight: FontWeight.bold,
                                 ),
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(100),
+                                ],
 
                                 decoration: InputDecoration(
                                   hintText: 'Event Title',
@@ -561,6 +570,9 @@ class _EditEventPageState extends State<EditEventPage> {
                                         color: Colors.white,
                                         fontSize: 20,
                                       ),
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(200),
+                                      ],
 
                                       decoration: InputDecoration(
                                         hintText: "Location",
