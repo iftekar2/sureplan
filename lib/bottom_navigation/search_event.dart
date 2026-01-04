@@ -108,10 +108,10 @@ class _SearchEventState extends State<SearchEvent> {
                         Text(
                           'Search for events using their 5-character ID',
                           style: TextStyle(
-                            color: Colors.grey,
                             fontSize: 18,
-                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[600],
                           ),
+
                           textAlign: TextAlign.center,
                         ),
                       ],

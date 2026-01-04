@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:sureplan/home/home_page.dart';
-import 'package:sureplan/home/invitations_page.dart';
-import 'package:sureplan/new_idea/Idea_page.dart';
-import 'package:sureplan/search_event/search_event.dart';
+import 'package:sureplan/bottom_navigation/home_page.dart';
+import 'package:sureplan/bottom_navigation/invitations_page.dart';
+import 'package:sureplan/bottom_navigation/Idea_page.dart';
+import 'package:sureplan/bottom_navigation/search_event.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});

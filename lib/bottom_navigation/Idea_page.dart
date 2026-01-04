@@ -164,8 +164,33 @@ class _IdeaPageState extends State<IdeaPage> {
           : RefreshIndicator(
               onRefresh: _fetchFeatures,
               child: _features.isEmpty
-                  ? Center(
-                      child: Text("No ideas yet. Be the first to add one!"),
+                  ? Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.network(
+                              "https://img.icons8.com/?size=100&id=Fbx0R3VBZJKy&format=png&color=000000",
+                              height: 50,
+                              width: 50,
+                              color: Colors.grey,
+                            ),
+
+                            SizedBox(height: 10),
+
+                            Text(
+                              "No new features requests yet. Be the first to add one!",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey[600],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
                     )
                   : ListView.builder(
                       padding: const EdgeInsets.all(20),
