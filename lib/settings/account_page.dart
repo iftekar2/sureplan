@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:sureplan/auth/auth_gate.dart';
 import 'package:sureplan/auth/auth_service.dart';
 import 'package:sureplan/settings/delete_account.dart';
 

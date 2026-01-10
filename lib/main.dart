@@ -47,10 +47,14 @@ class _MyAppState extends State<MyApp> {
         final token = await FirebaseMessaging.instance.getToken();
 
         if (token != null) {
-          await supabase
-              .from('user_profiles')
-              .update({'fcm_token': token})
-              .eq('id', event.session!.user.id);
+          await supabase.from('user_profiles').upsert({
+            'id': event.session!.user.id,
+            'fcm_token': token,
+            'email': event.session!.user.email,
+            'username':
+                event.session!.user.userMetadata?['display_name'] ??
+                'User_${event.session!.user.id.substring(0, 8)}',
+          });
         }
       }
     });
@@ -58,10 +62,14 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) async {
       final user = supabase.auth.currentUser;
       if (user != null) {
-        await supabase
-            .from('user_profiles')
-            .update({'fcm_token': fcmToken})
-            .eq('id', user.id);
+        await supabase.from('user_profiles').upsert({
+          'id': user.id,
+          'fcm_token': fcmToken,
+          'email': user.email,
+          'username':
+              user.userMetadata?['display_name'] ??
+              'User_${user.id.substring(0, 8)}',
+        });
       }
     });
 
