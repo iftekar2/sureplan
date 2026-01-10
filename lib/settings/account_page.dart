@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:sureplan/auth/auth_gate.dart';
 import 'package:sureplan/auth/auth_service.dart';
+import 'package:sureplan/settings/delete_account.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -383,10 +385,17 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
+  void showDeleteAccountDialog() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const DeleteAccount()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 221,
+      //height: 221,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -477,6 +486,28 @@ class _AccountPageState extends State<AccountPage> {
                           _updateNotifications(newValue);
                         },
                   activeColor: Colors.blue,
+                ),
+              ],
+            ),
+
+            Divider(color: Colors.grey.shade300),
+
+            Row(
+              children: [
+                Icon(Icons.delete_outline, size: 30),
+
+                SizedBox(width: 15),
+
+                Text(
+                  "Delete Account",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+
+                Spacer(),
+
+                IconButton(
+                  onPressed: showDeleteAccountDialog,
+                  icon: Icon(Icons.arrow_forward, size: 25),
                 ),
               ],
             ),

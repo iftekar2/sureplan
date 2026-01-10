@@ -146,4 +146,18 @@ class AuthService {
       return null;
     }
   }
+
+  // Delete current user account
+  Future<void> deleteAccount() async {
+    try {
+      // Call the RPC function to delete the user's data and auth account
+      await _supabase.rpc('delete_user_account');
+
+      // Clear local session just in case
+      await _supabase.auth.signOut();
+    } catch (e) {
+      debugPrint('Error deleting account: $e');
+      rethrow;
+    }
+  }
 }
