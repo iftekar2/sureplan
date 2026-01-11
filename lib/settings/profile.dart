@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sureplan/auth/auth_service.dart';
 import 'package:sureplan/settings/account_page.dart';
 import 'package:sureplan/welcome/welcome_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -153,7 +155,7 @@ class _ProfileState extends State<Profile> {
             Spacer(),
 
             Padding(
-              padding: const EdgeInsets.only(bottom: 50),
+              padding: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -177,6 +179,38 @@ class _ProfileState extends State<Profile> {
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
+                ),
+              ),
+            ),
+
+            Padding(
+              padding: EdgeInsets.only(bottom: 50),
+              child: RichText(
+                text: TextSpan(
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                  children: [
+                    const TextSpan(text: "Have questions? "),
+                    TextSpan(
+                      text: "Contact us",
+                      style: const TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          final Uri url = Uri.parse(
+                            'https://inquisitive-boba-d55e79.netlify.app/',
+                          );
+                          if (!await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          )) {
+                            throw Exception('Could not launch $url');
+                          }
+                        },
+                    ),
+                  ],
                 ),
               ),
             ),
